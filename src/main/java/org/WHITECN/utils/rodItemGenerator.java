@@ -35,4 +35,28 @@ public class rodItemGenerator {
         rod.setItemMeta(meta);
         return rod;
     }
+    public static ItemStack createSlimeRod() {
+        // 创建基础物品
+        ItemStack rod = new ItemStack(Material.END_ROD);
+        ItemMeta meta = rod.getItemMeta();
+
+        // 设置显示名称
+        meta.setDisplayName("§a粘液§2末地烛");
+
+        // 设置 Lore
+        List<String> lore = new ArrayList<>();
+        lore.add("§7一个黏糊糊的末地烛哦\n");
+        lore.add("§7已使用 §e0 §7次");
+        meta.setLore(lore);
+
+        // 设置自定义NBT标签
+        meta.getPersistentDataContainer().set(
+                new NamespacedKey(anendrod.getInstance(), "useCount"),
+                PersistentDataType.INTEGER, 0
+        );
+
+        // 应用修改
+        rod.setItemMeta(meta);
+        return rod;
+    }
 }

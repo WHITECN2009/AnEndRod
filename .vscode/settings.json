@@ -1,0 +1,15 @@
+{
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "java.import.gradle.enabled": true,
+    "java.import.gradle.wrapper.enabled": false,
+    "java.import.gradle.home": "/usr/share/java/gradle",
+    "java.compile.nullAnalysis.mode": "automatic",
+    "gradle.autoSync": true,
+    "java.configuration.runtimes": [
+        {
+            "name": "JavaSE-17",
+            "path": "/opt/java/zulu17.62.17-ca-jdk17.0.17-linux_x64",
+            "default": true
+        }
+    ]
+}
