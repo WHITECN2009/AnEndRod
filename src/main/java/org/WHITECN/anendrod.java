@@ -2,6 +2,7 @@ package org.WHITECN;
 
 import org.WHITECN.commands.rodMerge;
 import org.WHITECN.rods.RegularRod;
+import org.WHITECN.rods.SlimeRod;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Objects;
@@ -16,6 +17,7 @@ public final class anendrod extends JavaPlugin {
         instance = this;
         logger = getLogger();
         logger.info("插件已启用喵");
+        getServer().getPluginManager().registerEvents(new SlimeRod(),this);
         getServer().getPluginManager().registerEvents(new RegularRod(),this);
         Objects.requireNonNull(this.getCommand("rodmerge")).setExecutor(new rodMerge(this));
     }

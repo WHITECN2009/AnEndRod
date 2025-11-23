@@ -45,9 +45,11 @@ public class rodMerge implements CommandExecutor, Listener {
 
         //TODO:此处注册新的末地烛
         ItemStack regularRod = createMenuItem(Material.END_ROD,"§2普通末地烛","§7没什么特别的 就是末地烛哦");
+        ItemStack slimeRod = createMenuItem(Material.END_ROD,"§a粘液§2末地烛","§7一个黏糊糊的末地烛哦");
 
         //TODO:此处加载进菜单
         mergeUI.addItem(regularRod);
+        mergeUI.addItem(slimeRod);
 
         player.openInventory(mergeUI);
         return true;
@@ -69,16 +71,25 @@ public class rodMerge implements CommandExecutor, Listener {
             String itemName = Objects.requireNonNull(clickedItem.getItemMeta()).getDisplayName();
 
             // 根据点击的物品执行不同操作
+            Inventory inv = player.getInventory();
             switch (itemName) {
                 case "§2普通末地烛":
                     ItemStack regularRod = rodItemGenerator.createRegularRod();
-                    Inventory inv = player.getInventory();
                     if (hasRawRod(inv)) {
                         inv.addItem(regularRod);
                         player.sendMessage(prefix + "§2兑换成功喵~");
                         break;
                     }
                     player.sendMessage(prefix + "§c材料不足以兑换 普通末地烛 喵, 需要:末地烛x1");
+                    break;
+                case "§a粘液§2末地烛":
+                    ItemStack slimeRod = rodItemGenerator.createSlimeRod();
+                    if (hasRawRod(inv)) {
+                        inv.addItem(slimeRod);
+                        player.sendMessage(prefix + "§2兑换成功喵~");
+                        break;
+                    }
+                    player.sendMessage(prefix + "§c材料不足以兑换 粘液末地烛 喵, 需要:末地烛x1");
                     break;
             }
         }
