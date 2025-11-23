@@ -10,7 +10,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.WHITECN.utils.handlerRods;
+import org.WHITECN.utils.rodsHandler;
 import org.WHITECN.utils.useCounter;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -19,7 +19,7 @@ import java.util.List;
 
 public class SlimeRod implements Listener {
     @EventHandler
-    public void onRegularRod(PlayerInteractEvent event) {
+    public void onSlimeRod(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         ItemStack mainHand = event.getItem();
         if (mainHand != null && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
@@ -29,12 +29,12 @@ public class SlimeRod implements Listener {
                 mainHand.setItemMeta(useCounter.addTime(meta));
                 meta.setLore(List.of("§7一个黏糊糊的末地烛哦\n","§7已使用 §e" + meta.getPersistentDataContainer().get(new NamespacedKey(anendrod.getInstance(),"useCount"), PersistentDataType.INTEGER) + "§7 次"));
                 mainHand.setItemMeta(meta);
-                handlerRods.handlerSlimeRod(player);
+                rodsHandler.handleSlimeRod(player);
             }
         }
     }
     @EventHandler
-    public void onRegularRod_toEntity(PlayerInteractEntityEvent event) {
+    public void onSlimeRod_toEntity(PlayerInteractEntityEvent event) {
         Player player = event.getPlayer();
         if (!(event.getRightClicked() instanceof Player)) return;
         Player target = (Player) event.getRightClicked();
@@ -50,7 +50,7 @@ public class SlimeRod implements Listener {
                 mainHand.setItemMeta(useCounter.addTime(meta));
                 meta.setLore(List.of("§7一个黏糊糊的末地烛哦\n","§7已使用 §e" + meta.getPersistentDataContainer().get(new NamespacedKey(anendrod.getInstance(),"useCount"), PersistentDataType.INTEGER) + "§7 次"));
                 mainHand.setItemMeta(meta);
-                handlerRods.handlerSlimeRod(target);
+                rodsHandler.handleSlimeRod(target);
             }
         }
     }
