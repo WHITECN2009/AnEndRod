@@ -1,30 +1,23 @@
 package org.WHITECN.rods;
 
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.ChatColor;
 import org.WHITECN.anendrod;
 import org.bukkit.NamespacedKey;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Slime;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.WHITECN.utils.handlerRods;
 import org.WHITECN.utils.useCounter;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 import java.util.List;
-import java.util.Random;
 
 public class SlimeRod implements Listener {
-    private Random random = new Random();
     @EventHandler
     public void onRegularRod(PlayerInteractEvent event) {
         Player player = event.getPlayer();
@@ -36,16 +29,28 @@ public class SlimeRod implements Listener {
                 mainHand.setItemMeta(useCounter.addTime(meta));
                 meta.setLore(List.of("§7一个黏糊糊的末地烛哦\n","§7已使用 §e" + meta.getPersistentDataContainer().get(new NamespacedKey(anendrod.getInstance(),"useCount"), PersistentDataType.INTEGER) + "§7 次"));
                 mainHand.setItemMeta(meta);
-                player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS,40,0));
-                player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION,100,4));
-                player.damage(1d);
-                for (int i = 0; i < Math.abs(random.nextInt(5)); i++) {
-                    Slime entity = (Slime) player.getWorld().spawnEntity(player.getLocation(), EntityType.SLIME); entity.setSize(1);
+                handlerRods.handlerSlimeRod(player);
+            }
+        }
+    }
+    @EventHandler
+    public void onRegularRod_toEntity(PlayerInteractEntityEvent event) {
+        Player player = event.getPlayer();
+        if (!(event.getRightClicked() instanceof Player)) return;
+        Player target = (Player) event.getRightClicked();
+        ItemStack mainHand = player.getEquipment().getItemInMainHand();
+        if (mainHand != null) {
+            ItemMeta meta = mainHand.getItemMeta();
+            if (meta != null && meta.getDisplayName().equals("§a粘液§2末地烛")) {
+                event.setCancelled(true);
+                if (target.getEquipment().getLeggings() == null) {
+                    player.sendMessage(ChatColor.RED + target.getDisplayName() + "还穿着裤子呢!");
+                    return;
                 }
-                player.setNoDamageTicks(0);
-                player.playSound(player, Sound.BLOCK_HONEY_BLOCK_SLIDE, 100.0f, 1.0f);
-                player.spawnParticle(Particle.HEART,player.getLocation(),30,1.5d,1.0d,1.5d);
-                player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§d呜嗯...进去了~"));
+                mainHand.setItemMeta(useCounter.addTime(meta));
+                meta.setLore(List.of("§7一个黏糊糊的末地烛哦\n","§7已使用 §e" + meta.getPersistentDataContainer().get(new NamespacedKey(anendrod.getInstance(),"useCount"), PersistentDataType.INTEGER) + "§7 次"));
+                mainHand.setItemMeta(meta);
+                handlerRods.handlerSlimeRod(target);
             }
         }
     }
