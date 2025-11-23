@@ -4,13 +4,13 @@
 
 更新中...?
 
-想法来源: **CrystalNeko**
+# 特别鸣谢
+ - 想法来源: **CrystalNeko**
+ - 功能提供者: **N501YHappy**
 
 请支持他的模组！https://github.com/CSneko/toNeko
 
-# 指令及用法
+# 末地烛无序配方
 
-- /rodmerge (打开末地烛兑换菜单)
-
-
-- 嗯？没了哦 你以为呢喵?
+- 普通末地烛 : 末地烛x1
+- 粘液末地烛 : 末地烛x1 粘液球x1

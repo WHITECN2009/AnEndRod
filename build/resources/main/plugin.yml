@@ -1,5 +1,5 @@
 name: AnEndRod
-version: '1.0'
+version: '1.1'
 main: org.WHITECN.anendrod
 api-version: '1.20'
 prefix: EndRod
@@ -7,7 +7,3 @@ load: STARTUP
 authors: [ WHITECN_凌星 ]
 description: 可插入末地烛....但是插件版?
 website: https://space.bilibili.com/598999070
-commands:
-  rodmerge:
-    description: '打开兑换末地烛的界面喵'
-    usage: /rodmerge
