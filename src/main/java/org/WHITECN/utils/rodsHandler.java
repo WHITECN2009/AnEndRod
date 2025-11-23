@@ -16,7 +16,7 @@ import org.bukkit.potion.PotionEffectType;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 
-public class handlerRods {
+public class rodsHandler {
     private static Random random = new Random();
     private static List<Sound> Insert_sounds = Arrays.asList(
         Sound.ITEM_HONEYCOMB_WAX_ON,
@@ -27,7 +27,7 @@ public class handlerRods {
         Sound.BLOCK_HONEY_BLOCK_SLIDE,
         Sound.BLOCK_HONEY_BLOCK_STEP
     );
-    public static void handlerRegularRod(Player player){
+    public static void handleRegularRod(Player player){
         player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS,40,0));
         player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION,100,4));
         player.damage(1.0d);
@@ -37,7 +37,7 @@ public class handlerRods {
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§d呜嗯...进去了~"));
         player.sendMessage(MessageGenerator.getRMessage());
     }
-    public static void handlerSlimeRod(Player player){
+    public static void handleSlimeRod(Player player){
         player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS,40,0));
         player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION,100,4));
         player.damage(1d);
