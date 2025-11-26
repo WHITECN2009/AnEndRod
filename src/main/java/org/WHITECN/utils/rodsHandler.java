@@ -35,6 +35,7 @@ public class rodsHandler {
         player.playSound(player, Insert_sounds.get(random.nextInt(Insert_sounds.size())), 100.0f, 1.0f);
         player.spawnParticle(Particle.HEART,player.getLocation(),30,1.5d,1.0d,1.5d);
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§d呜嗯...进去了~"));
+        player.chat(MessageGenerator.getRMessage());
     }
     public static void handleSlimeRod(Player player){
         player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS,40,0));
@@ -47,5 +48,6 @@ public class rodsHandler {
         player.playSound(player,Insert_sounds.get(random.nextInt(Insert_sounds.size())), 100.0f, 1.0f);
         player.spawnParticle(Particle.HEART,player.getLocation(),30,1.5d,1.0d,1.5d);
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§d呜嗯...进去了~"));
+        player.chat(MessageGenerator.getRMessage());
     }
 }

@@ -1,6 +1,7 @@
 package org.WHITECN.utils;
 
 import org.WHITECN.anendrod;
+import org.WHITECN.Vars;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -17,7 +18,7 @@ public class rodItemGenerator {
         ItemMeta meta = rod.getItemMeta();
 
         // 设置显示名称
-        meta.setDisplayName("§2普通末地烛");
+        meta.setDisplayName(Vars.REGULAR_ROD_NAME);
 
         // 设置 Lore
         List<String> lore = new ArrayList<>();
@@ -41,7 +42,7 @@ public class rodItemGenerator {
         ItemMeta meta = rod.getItemMeta();
 
         // 设置显示名称
-        meta.setDisplayName("§a粘液§2末地烛");
+        meta.setDisplayName(Vars.SLIME_ROD_NAME);
 
         // 设置 Lore
         List<String> lore = new ArrayList<>();
