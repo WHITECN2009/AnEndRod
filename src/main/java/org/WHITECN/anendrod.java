@@ -1,5 +1,6 @@
 package org.WHITECN;
 
+import org.WHITECN.commands.rodMerge;
 import org.WHITECN.rods.RegularRod;
 import org.WHITECN.rods.SlimeRod;
 import org.WHITECN.utils.rodItemGenerator;
@@ -12,6 +13,7 @@ import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Collections;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 public final class anendrod extends JavaPlugin {
@@ -23,6 +25,7 @@ public final class anendrod extends JavaPlugin {
         instance = this;
         logger = getLogger();
         logger.info("插件已启用喵");
+        Objects.requireNonNull(this.getCommand("rodmerge")).setExecutor(new rodMerge(this));
         getServer().getPluginManager().registerEvents(new SlimeRod(),this);
         getServer().getPluginManager().registerEvents(new RegularRod(),this);
 
