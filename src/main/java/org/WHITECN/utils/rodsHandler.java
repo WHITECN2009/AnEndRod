@@ -140,7 +140,7 @@ public class rodsHandler {
                     }else if(t == 53*20){
                         player.sendMessage(ChatColor.LIGHT_PURPLE +"啊哈♥...");
                     }else if(t == 57*20){
-                        player.sendMessage(ChatColor.LIGHT_PURPLE +"要来了喵，不要，哇啊...");
+                        player.sendMessage(ChatColor.LIGHT_PURPLE +"要去了喵，不要，哇啊...");
                     }
                     if(t == 1160){
                         player.sendMessage(ChatColor.LIGHT_PURPLE +"不能再这样下去了喵♥♥....唔...");
