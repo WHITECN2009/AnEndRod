@@ -32,6 +32,8 @@ public class rodItemGenerator {
                 PersistentDataType.INTEGER, 0
         );
 
+        meta.setCustomModelData(1);    //添加特殊数据，用于匹配材质包    
+
         // 应用修改
         rod.setItemMeta(meta);
         return rod;
@@ -55,6 +57,8 @@ public class rodItemGenerator {
                 new NamespacedKey(anendrod.getInstance(), "useCount"),
                 PersistentDataType.INTEGER, 0
         );
+
+        meta.setCustomModelData(2);    //添加特殊数据，用于匹配材质包    
 
         // 应用修改
         rod.setItemMeta(meta);
@@ -81,6 +85,8 @@ public class rodItemGenerator {
                 new NamespacedKey(anendrod.getInstance(), "useCount"),
                 PersistentDataType.INTEGER, 0
         );
+
+        meta.setCustomModelData(3);    //添加特殊数据，用于匹配材质包    
 
         // 应用修改
         rod.setItemMeta(meta);
