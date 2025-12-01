@@ -12,10 +12,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerResourcePackStatusEvent;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.logging.Logger;
@@ -23,6 +25,8 @@ import java.util.logging.Logger;
 public final class anendrod extends JavaPlugin {
     private static anendrod instance;
     private static Logger logger;
+    private static final String PACK_URL = "https://zip1.webgetstore.com/2025/12/01/84295d9704771ba802c748d81a225824.zip?sg=b41a7070b92973783b2bcd88e3695e06&e=692db3b9&fileName=AnEndRod_Pack.zip&fi=264813492";
+    private static final String PACK_SHA1 = "e69ff07c25cacb0d56fa9dfc65b1e1ef13b35021";
 
     @Override
     public void onEnable() {
@@ -33,6 +37,8 @@ public final class anendrod extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new SlimeRod(),this);
         getServer().getPluginManager().registerEvents(new RegularRod(),this);
         getServer().getPluginManager().registerEvents(new RegularProRod(),this);
+
+        saveResource("AnEndRod_Pack.zip", true);
 
         //此处注册配方变量
         NamespacedKey regular = new NamespacedKey(anendrod.getInstance(),"regular_rod");
@@ -62,6 +68,7 @@ public final class anendrod extends JavaPlugin {
                         event.getPlayer().discoverRecipes(Collections.singletonList(regular));
                         event.getPlayer().discoverRecipes(Collections.singletonList(slime));
                         event.getPlayer().discoverRecipes(Collections.singletonList(pro));
+                        event.getPlayer().setResourcePack(PACK_URL,PACK_SHA1.getBytes(StandardCharsets.UTF_8));//材质包
                     }
                 }, 20L);
             }
