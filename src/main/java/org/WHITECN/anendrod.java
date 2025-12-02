@@ -25,8 +25,7 @@ import java.util.logging.Logger;
 public final class anendrod extends JavaPlugin {
     private static anendrod instance;
     private static Logger logger;
-    private static final String PACK_URL = "https://zip1.webgetstore.com/2025/12/01/84295d9704771ba802c748d81a225824.zip?sg=b41a7070b92973783b2bcd88e3695e06&e=692db3b9&fileName=AnEndRod_Pack.zip&fi=264813492";
-    private static final String PACK_SHA1 = "e69ff07c25cacb0d56fa9dfc65b1e1ef13b35021";
+    private static final String PACK_URL = "https://bgithub.xyz/WHITECN2009/AnEndRod/raw/refs/heads/master/src/main/resources/AnEndRod_Pack.zip";
 
     @Override
     public void onEnable() {
@@ -68,7 +67,7 @@ public final class anendrod extends JavaPlugin {
                         event.getPlayer().discoverRecipes(Collections.singletonList(regular));
                         event.getPlayer().discoverRecipes(Collections.singletonList(slime));
                         event.getPlayer().discoverRecipes(Collections.singletonList(pro));
-                        event.getPlayer().setResourcePack(PACK_URL,PACK_SHA1.getBytes(StandardCharsets.UTF_8));//材质包
+                        event.getPlayer().setResourcePack(PACK_URL);//材质包
                     }
                 }, 20L);
             }
