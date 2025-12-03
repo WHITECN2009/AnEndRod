@@ -4,6 +4,7 @@ import org.WHITECN.commands.rodMerge;
 import org.WHITECN.rods.RegularProRod;
 import org.WHITECN.rods.RegularRod;
 import org.WHITECN.rods.SlimeRod;
+import org.WHITECN.utils.ConfigManager;
 import org.WHITECN.utils.rodItemGenerator;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -22,7 +23,6 @@ import java.util.logging.Logger;
 public final class anendrod extends JavaPlugin {
     private static anendrod instance;
     private static Logger logger;
-    private static final String PACK_URL = "https://bgithub.xyz/WHITECN2009/AnEndRod/raw/refs/heads/master/src/main/resources/AnEndRod_Pack.zip";
 
     @Override
     public void onEnable() {
@@ -35,6 +35,7 @@ public final class anendrod extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new RegularProRod(),this);
 
         saveResource("AnEndRod_Pack.zip", true);
+        ConfigManager.loadConfig(this); //加载配置文件
 
         //此处注册配方变量
         NamespacedKey regular = new NamespacedKey(anendrod.getInstance(),"regular_rod");
@@ -64,7 +65,7 @@ public final class anendrod extends JavaPlugin {
                         event.getPlayer().discoverRecipes(Collections.singletonList(regular));
                         event.getPlayer().discoverRecipes(Collections.singletonList(slime));
                         event.getPlayer().discoverRecipes(Collections.singletonList(pro));
-                        event.getPlayer().setResourcePack(PACK_URL);//材质包
+                        event.getPlayer().setResourcePack(ConfigManager.PACK_URL);//材质包
                     }
                 }, 20L);
             }

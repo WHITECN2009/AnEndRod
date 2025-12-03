@@ -1,11 +1,14 @@
 package org.WHITECN.commands;
 
+import org.WHITECN.anendrod;
+import org.WHITECN.utils.ConfigManager;
 import org.WHITECN.utils.rodItemGenerator;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,10 +19,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public class rodMerge implements CommandExecutor, Listener {
+public class rodMerge implements CommandExecutor, Listener ,TabCompleter{
     String prefix = "§9[EndRod]§r ";
 
     private final JavaPlugin plugin;
@@ -32,11 +36,21 @@ public class rodMerge implements CommandExecutor, Listener {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
+            if (!sender.isOp()) {
+                sender.sendMessage(prefix + "§c你没有权限使用 reload 喵~");
+                return true;
+            }
+            ConfigManager.loadConfig(anendrod.getInstance());
+            sender.sendMessage(prefix + "§a配置已重载喵~");
+            return true;
+        }
         if (!(sender instanceof Player)) {
             sender.sendMessage(prefix + "§c该命令仅能被玩家执行喵");
             return true;
         }
         Player player = (Player) sender;
+        
         if (args.length != 0) {
             sender.sendMessage(prefix + "§c用法:/rodmerge");
             return true;
@@ -56,7 +70,15 @@ public class rodMerge implements CommandExecutor, Listener {
         player.openInventory(mergeUI);
         return true;
     }
-
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command cmd, String alias, String[] args) {
+        if (args.length == 1 && sender.isOp()) {
+            List<String> list = new ArrayList<>();
+            list.add("reload");
+            return list;
+        }
+        return Collections.emptyList(); // 其余情况什么都没有！
+    }
     @EventHandler
     public void onMenuClick(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
