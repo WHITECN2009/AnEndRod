@@ -1,1 +1,3 @@
-pack_url: "https://bgithub.xyz/WHITECN2009/AnEndRod/raw/refs/heads/master/src/main/resources/AnEndRod_Pack.zip"
+enable_pack: true #默认开启材质包，改成false就可以关掉啦
+pack_url: "https://bgithub.xyz/WHITECN2009/AnEndRod/raw/refs/heads/master/src/main/resources/AnEndRod_Pack.zip" 
+#这个材质包连接可能会失效，失效找作者去补喵！
