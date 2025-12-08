@@ -34,6 +34,7 @@ public final class anendrod extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new RegularRod(),this);
         getServer().getPluginManager().registerEvents(new RegularProRod(),this);
 
+        saveResource("AnEndRod_Pack.zip", true);
         ConfigManager.loadConfig(this); //加载配置文件
 
         //此处注册配方变量
