@@ -29,16 +29,24 @@
 &gt; 亲手调教的材质包，不用就亏了一个亿！  
 &gt; 正常情况下会自动下载喵，失败的话……
 
-作者会告诉材质包的新url！ 在`config.yml`里面设置之后再重载哦！
+&gt; 作者会告诉材质包的新url！ 在`config.yml`里面设置之后再重载哦！
 
-可以在配置文件选择是否启用材质包
+### **备用路径**：`plugins/AnEndRod/AnEndRod_Pack.zip`  
+### 再打不开？哼，自己去找作者：[@WHITECN2009](https://github.com/WHITECN2009) —— 反正他一直在咕咕咕 ╭(╯^╰)╮
+### 可以在配置文件选择是否启用材质包
 ---
 # 命令
 |名称 | 材料 |
 |---|---|
 | /rodmerge relaod | 重载配置文件 |
 
-**备用路径**：`plugins/AnEndRod/AnEndRod_Pack.zip`  
-再打不开？哼，自己去找作者：[@WHITECN2009](https://github.com/WHITECN2009) —— 反正他一直在咕咕咕 ╭(╯^╰)╮
+# 配置文件解释 （给一群臭杂鱼看的！）
 
+
+```yaml
+enable_pack: true #默认开启材质包，改成false就可以关掉啦
+summon_slime: true #是否使用粘液末地烛的时候生成史莱姆
+pack_url: "https://bgithub.xyz/WHITECN2009/AnEndRod/raw/refs/heads/master/src/main/resources/AnEndRod_Pack.zip" 
+#这个材质包连接可能会失效，失效找作者去补喵！
+```
 ---

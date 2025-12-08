@@ -46,9 +46,11 @@ public class rodsHandler {
         player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS,40,0));
         player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION,100,4));
         player.damage(1d);
-        for (int i = 0; i < Math.abs(random.nextInt(2)); i++) {
-            Slime entity = (Slime) player.getWorld().spawnEntity(player.getLocation(), EntityType.SLIME);
-            entity.setSize(1);
+        if (ConfigManager.SUMMON_SLIME) {
+            for (int i = 0; i < Math.abs(random.nextInt(2)); i++) {
+                Slime entity = (Slime) player.getWorld().spawnEntity(player.getLocation(), EntityType.SLIME);
+                entity.setSize(1);
+            }
         }
         player.setCooldown(Material.END_ROD,10);
         player.setNoDamageTicks(5);
