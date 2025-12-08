@@ -34,7 +34,6 @@ public final class anendrod extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new RegularRod(),this);
         getServer().getPluginManager().registerEvents(new RegularProRod(),this);
 
-        saveResource("AnEndRod_Pack.zip", true);
         ConfigManager.loadConfig(this); //加载配置文件
 
         //此处注册配方变量
@@ -65,7 +64,9 @@ public final class anendrod extends JavaPlugin {
                         event.getPlayer().discoverRecipes(Collections.singletonList(regular));
                         event.getPlayer().discoverRecipes(Collections.singletonList(slime));
                         event.getPlayer().discoverRecipes(Collections.singletonList(pro));
-                        event.getPlayer().setResourcePack(ConfigManager.PACK_URL);//材质包
+                        if (ConfigManager.ENABLE_PACK) {
+                            event.getPlayer().setResourcePack(ConfigManager.PACK_URL);//材质包
+                        }
                     }
                 }, 20L);
             }

@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.World.Environment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Slime;
@@ -147,9 +148,11 @@ public class rodsHandler {
                     }
                 } else {
                     if(t == 1210){
-                        player.sendMessage(ChatColor.GRAY +"哗啦");
                         if (player.getLocation().getBlock().getType() == Material.AIR || player.getLocation().getBlock().getType()  == Material.CAVE_AIR || player.getLocation().getBlock().getType()  == Material.VOID_AIR) {
-                            player.getWorld().getBlockAt(player.getLocation()).setType(Material.WATER);
+                            if (player.getLocation().getWorld().getEnvironment() != Environment.NETHER) { //检测是不是在地狱
+                                player.sendMessage(ChatColor.GRAY +"哗啦");
+                                player.getWorld().getBlockAt(player.getLocation()).setType(Material.WATER);
+                            }
                         }
                     }
 

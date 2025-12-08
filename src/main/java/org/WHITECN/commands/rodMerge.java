@@ -123,7 +123,7 @@ public class rodMerge implements CommandExecutor, Listener ,TabCompleter{
                         player.sendMessage(prefix + "§2兑换成功喵~");
                         break;
                     }
-                    player.sendMessage(prefix + "§c材料不足以兑换 粘液末地烛 喵, 需要:末地烛x9");
+                    player.sendMessage(prefix + "§c材料不足以兑换 Pro末地烛 喵, 需要:末地烛x9");
                     break;
             }
         }
