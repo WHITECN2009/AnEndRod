@@ -38,7 +38,7 @@ public class RegularRod implements Listener {
                     mainHand.setItemMeta(useCounter.addTime(meta));
                     meta.setLore(List.of("§7没什么特别的 就是末地烛哦\n","§7已使用 §e" + meta.getPersistentDataContainer().get(new NamespacedKey(anendrod.getInstance(),"useCount"), PersistentDataType.INTEGER) + "§7 次"));
                     mainHand.setItemMeta(meta);
-                    rodsHandler.handleRegularRod(player);
+                    rodsHandler.handleRegularRod(player,player);
                 }
             }
         }
@@ -58,7 +58,7 @@ public class RegularRod implements Listener {
                 mainHand.setItemMeta(useCounter.addTime(meta));
                 meta.setLore(List.of("§7没什么特别的 就是末地烛哦\n","§7已使用 §e" + meta.getPersistentDataContainer().get(new NamespacedKey(anendrod.getInstance(),"useCount"), PersistentDataType.INTEGER) + "§7 次"));
                 mainHand.setItemMeta(meta);
-                rodsHandler.handleRegularRod(target);
+                rodsHandler.handleRegularRod(event.getPlayer(),target);
             }
         }
     }

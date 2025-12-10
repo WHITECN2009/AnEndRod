@@ -2,6 +2,7 @@ package org.WHITECN.utils;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -32,31 +33,31 @@ public class rodsHandler {
         Sound.BLOCK_HONEY_BLOCK_SLIDE,
         Sound.BLOCK_HONEY_BLOCK_STEP
     );
-    public static void handleRegularRod(Player player){
-        player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS,40,0));
-        player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION,100,4));
-        player.damage(1.0d);
+    public static void handleRegularRod(Player player,Player target){
+        target.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS,40,0));
+        target.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION,100,4));
+        target.damage(1.0d);
         player.setCooldown(Material.END_ROD,10);
-        player.setNoDamageTicks(5);
-        player.playSound(player, Insert_sounds.get(random.nextInt(Insert_sounds.size())), 100.0f, 1.0f);
-        player.spawnParticle(Particle.HEART,player.getLocation(),30,1.5d,1.0d,1.5d);
-        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§d呜嗯...进去了~"));
+        target.setNoDamageTicks(5);
+        target.playSound(target, Insert_sounds.get(random.nextInt(Insert_sounds.size())), 100.0f, 1.0f);
+        target.spawnParticle(Particle.HEART,target.getLocation(),30,1.5d,1.0d,1.5d);
+        target.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§d呜嗯...进去了~"));
     }
-    public static void handleSlimeRod(Player player){
-        player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS,40,0));
-        player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION,100,4));
-        player.damage(1d);
+    public static void handleSlimeRod(Player player,Player target){
+        target.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS,40,0));
+        target.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION,100,4));
+        target.damage(1d);
         if (ConfigManager.SUMMON_SLIME) {
             for (int i = 0; i < Math.abs(random.nextInt(2)); i++) {
-                Slime entity = (Slime) player.getWorld().spawnEntity(player.getLocation(), EntityType.SLIME);
+                Slime entity = (Slime) target.getWorld().spawnEntity(target.getLocation(), EntityType.SLIME);
                 entity.setSize(1);
             }
         }
         player.setCooldown(Material.END_ROD,10);
-        player.setNoDamageTicks(5);
-        player.playSound(player,Insert_sounds.get(random.nextInt(Insert_sounds.size())), 100.0f, 1.0f);
-        player.spawnParticle(Particle.HEART,player.getLocation(),30,1.5d,1.0d,1.5d);
-        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§d呜嗯...进去了~"));
+        target.setNoDamageTicks(5);
+        target.playSound(player,Insert_sounds.get(random.nextInt(Insert_sounds.size())), 100.0f, 1.0f);
+        target.spawnParticle(Particle.HEART,player.getLocation(),30,1.5d,1.0d,1.5d);
+        target.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§d呜嗯...进去了~"));
     }
 
 
@@ -151,7 +152,7 @@ public class rodsHandler {
                 } else {
                     if(t == 1210){
                         if (player.getLocation().getBlock().getType() == Material.AIR || player.getLocation().getBlock().getType()  == Material.CAVE_AIR || player.getLocation().getBlock().getType()  == Material.VOID_AIR) {
-                            if (player.getLocation().getWorld().getEnvironment() != Environment.NETHER) { //检测是不是在地狱
+                            if (Objects.requireNonNull(player.getLocation().getWorld()).getEnvironment() != Environment.NETHER) { //检测是不是在地狱
                                 player.sendMessage(ChatColor.GRAY +"哗啦");
                                 player.getWorld().getBlockAt(player.getLocation()).setType(Material.WATER);
                             }

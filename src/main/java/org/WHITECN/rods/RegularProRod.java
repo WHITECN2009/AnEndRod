@@ -43,23 +43,4 @@ public class RegularProRod implements Listener {
             }
         }
     }
-    @EventHandler
-    public void onRegularProRod_toEntity(PlayerInteractEntityEvent event) {
-        if (event.getHand() == EquipmentSlot.OFF_HAND) {
-            return;
-        }
-        Player player = event.getPlayer();
-        if (event.getRightClicked() instanceof Player) {
-            Player target = (Player) event.getRightClicked();
-            ItemStack mainHand = Objects.requireNonNull(player.getEquipment()).getItemInMainHand();
-            ItemMeta meta = mainHand.getItemMeta();
-            if (meta != null && meta.getDisplayName().equals("§bPro§2末地烛") && player.isSneaking() && player.getCooldown(Material.END_ROD) == 0) {
-                event.setCancelled(true);
-                mainHand.setItemMeta(useCounter.addTime(meta));
-                meta.setLore(List.of("§7普通末地烛的§bPro§7版\n","§7已使用 §e" + meta.getPersistentDataContainer().get(new NamespacedKey(anendrod.getInstance(),"useCount"), PersistentDataType.INTEGER) + "§7 次"));
-                mainHand.setItemMeta(meta);
-                rodsHandler.handleRegularProRod(target);
-            }
-        }
-    }
 }
