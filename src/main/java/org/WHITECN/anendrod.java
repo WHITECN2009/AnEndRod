@@ -1,6 +1,7 @@
 package org.WHITECN;
 
 import org.WHITECN.commands.rodMerge;
+import org.WHITECN.listeners.DeathListener;
 import org.WHITECN.rods.RegularProRod;
 import org.WHITECN.rods.RegularRod;
 import org.WHITECN.rods.SlimeRod;
@@ -33,6 +34,7 @@ public final class anendrod extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new SlimeRod(),this);
         getServer().getPluginManager().registerEvents(new RegularRod(),this);
         getServer().getPluginManager().registerEvents(new RegularProRod(),this);
+        getServer().getPluginManager().registerEvents(new DeathListener(this),this);
 
         saveResource("AnEndRod_Pack.zip", true);
         ConfigManager.loadConfig(this); //加载配置文件

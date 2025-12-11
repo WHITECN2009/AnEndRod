@@ -7,6 +7,7 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.WHITECN.anendrod;
+import org.WHITECN.listeners.DeathListener;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -73,7 +74,6 @@ public class rodsHandler {
             @Override
             public void run() {
                 if (!player.isOnline() || player.isDead() || t > 80 * 20) { cancel(); return; }
-
                 /* -------- 0-30 秒：前奏喵 -------- */
                 if (t <= 30*20) {
                     if (t % 40 == 0){//2喵

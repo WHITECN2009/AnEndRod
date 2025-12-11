@@ -14,6 +14,7 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.WHITECN.utils.Status;
 import org.WHITECN.utils.rodsHandler;
 import org.WHITECN.utils.useCounter;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -35,6 +36,7 @@ public class SlimeRod implements Listener {
                     mainHand.setItemMeta(useCounter.addTime(meta));
                     meta.setLore(List.of("§7一个黏糊糊的末地烛哦\n","§7已使用 §e" + meta.getPersistentDataContainer().get(new NamespacedKey(anendrod.getInstance(),"useCount"), PersistentDataType.INTEGER) + "§7 次"));
                     mainHand.setItemMeta(meta);
+                    Status.add(player.getUniqueId(), player.getUniqueId(), 10*20, mainHand);
                     rodsHandler.handleSlimeRod(player,player);
                 }
             }
@@ -59,6 +61,7 @@ public class SlimeRod implements Listener {
                 mainHand.setItemMeta(useCounter.addTime(meta));
                 meta.setLore(List.of("§7一个黏糊糊的末地烛哦\n","§7已使用 §e" + meta.getPersistentDataContainer().get(new NamespacedKey(anendrod.getInstance(),"useCount"), PersistentDataType.INTEGER) + "§7 次"));
                 mainHand.setItemMeta(meta);
+                Status.add(player.getUniqueId(), target.getUniqueId(), 10*20, mainHand);
                 rodsHandler.handleSlimeRod(event.getPlayer(),target);
             }
         }
