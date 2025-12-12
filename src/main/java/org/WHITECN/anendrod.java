@@ -17,6 +17,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import net.md_5.bungee.api.ChatColor;
+
 import java.util.Collections;
 import java.util.Objects;
 import java.util.logging.Logger;
@@ -67,6 +69,9 @@ public final class anendrod extends JavaPlugin {
                         event.getPlayer().discoverRecipes(Collections.singletonList(regular));
                         event.getPlayer().discoverRecipes(Collections.singletonList(slime));
                         event.getPlayer().discoverRecipes(Collections.singletonList(pro));
+                        if (event.getPlayer().getName().equals("Xiaoyingawa")) {
+                            event.getPlayer().sendMessage(ChatColor.RED + "快测试插件，不要录了！");
+                        }
                         if (ConfigManager.ENABLE_PACK) {
                             event.getPlayer().setResourcePack(ConfigManager.PACK_URL);//材质包
                         }

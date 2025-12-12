@@ -1,5 +1,6 @@
 package org.WHITECN.listeners;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -19,7 +20,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 
 public class DeathListener implements Listener {
 
-    public static Map<UUID, DeathStatus> mStatus;   // 我不知道怎么描述了喵喵喵
+    public static Map<UUID, DeathStatus> mStatus = new HashMap<UUID,DeathStatus>();   // 我不知道怎么描述了喵喵喵
     private Plugin plugin;
     public DeathListener(Plugin plugin){
         this.plugin = plugin;

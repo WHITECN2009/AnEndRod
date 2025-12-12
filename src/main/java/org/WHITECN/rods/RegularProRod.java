@@ -17,6 +17,7 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.WHITECN.utils.DeathStatus;
 import org.WHITECN.utils.rodsHandler;
 import org.WHITECN.utils.useCounter;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -39,6 +40,7 @@ public class RegularProRod implements Listener {
                     meta.setLore(List.of("§7普通末地烛的§bPro§7版\n","§7已使用 §e" + meta.getPersistentDataContainer().get(new NamespacedKey(anendrod.getInstance(),"useCount"), PersistentDataType.INTEGER) + "§7 次"));
                     mainHand.setItemMeta(meta);
                     rodsHandler.handleRegularProRod(player);
+                    DeathStatus.add(player.getUniqueId(), player.getUniqueId(), (80+10)*20, mainHand); //10second,这10second里面玩家死了就是被我插的呢！
                 }
             }
         }
