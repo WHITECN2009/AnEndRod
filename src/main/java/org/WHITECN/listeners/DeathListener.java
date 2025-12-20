@@ -25,23 +25,6 @@ public class DeathListener implements Listener {
     public DeathListener(Plugin plugin){
         this.plugin = plugin;
     }
-    public void onRunnable() {
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                for (Player p : Bukkit.getOnlinePlayers()) {
-                    UUID uuid = p.getUniqueId();
-                    if (mStatus.containsKey(uuid)) {
-                        DeathStatus status = mStatus.get(uuid);
-                        status.setTime(status.getTime()-1);
-                        if (status.getTime() <=0) {
-                            mStatus.remove(uuid);
-                        }
-                    }
-                }
-            }
-        }.runTaskTimer(plugin, 0L, 1L);
-    }
     @EventHandler
     public void onDeath(PlayerDeathEvent event) {
         Player player = event.getEntity();
