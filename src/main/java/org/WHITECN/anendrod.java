@@ -92,7 +92,7 @@ public final class anendrod extends JavaPlugin {
             p.discoverRecipes(Collections.singletonList(slime));
             p.discoverRecipes(Collections.singletonList(pro));
         }//为在线猫粮注册配方
-        new DeathRunnable().runTaskTimer(this, 0L, 20L); //计时器！！！
+        new DeathRunnable().runTaskTimer(this, 0L, 1L); //计时器！！！
     }
 
     @Override
