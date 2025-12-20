@@ -5,6 +5,7 @@ import org.WHITECN.listeners.DeathListener;
 import org.WHITECN.rods.RegularProRod;
 import org.WHITECN.rods.RegularRod;
 import org.WHITECN.rods.SlimeRod;
+import org.WHITECN.runnables.DeathRunnable;
 import org.WHITECN.utils.ConfigManager;
 import org.WHITECN.utils.rodItemGenerator;
 import org.WHITECN.utils.tagUtils;
@@ -91,6 +92,7 @@ public final class anendrod extends JavaPlugin {
             p.discoverRecipes(Collections.singletonList(slime));
             p.discoverRecipes(Collections.singletonList(pro));
         }//为在线猫粮注册配方
+        new DeathRunnable().runTaskTimer(this, 0L, 20L); //计时器！！！
     }
 
     @Override
