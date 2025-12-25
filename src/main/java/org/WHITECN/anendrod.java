@@ -1,11 +1,18 @@
 package org.WHITECN;
 
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Objects;
+import java.util.logging.Logger;
+
 import org.WHITECN.commands.rodMerge;
+import org.WHITECN.items.Handcuffs;
 import org.WHITECN.listeners.DeathListener;
 import org.WHITECN.rods.RegularProRod;
 import org.WHITECN.rods.RegularRod;
 import org.WHITECN.rods.SlimeRod;
 import org.WHITECN.runnables.DeathRunnable;
+import org.WHITECN.runnables.HandcuffsRunnable;
 import org.WHITECN.utils.ConfigManager;
 import org.WHITECN.utils.rodItemGenerator;
 import org.WHITECN.utils.tagUtils;
@@ -20,11 +27,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Objects;
-import java.util.logging.Logger;
 
 public final class anendrod extends JavaPlugin {
     private static anendrod instance;
@@ -41,6 +43,8 @@ public final class anendrod extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new RegularProRod(),this);
         getServer().getPluginManager().registerEvents(new DeathListener(this),this);
 
+        getServer().getPluginManager().registerEvents(new Handcuffs(),this);
+
         saveResource("AnEndRod_Pack.zip", true);
         ConfigManager.loadConfig(this); //加载配置文件
         tagUtils.init(this);
@@ -49,6 +53,7 @@ public final class anendrod extends JavaPlugin {
         removeRecipeIfExists("regular_rod");
         removeRecipeIfExists("slime");
         removeRecipeIfExists("pro");
+        removeRecipeIfExists("cuff");
 
         //此处注册配方变量
         NamespacedKey regular = new NamespacedKey(anendrod.getInstance(),"regular_rod");
@@ -57,18 +62,23 @@ public final class anendrod extends JavaPlugin {
         ShapelessRecipe slimeRod = new ShapelessRecipe(slime,rodItemGenerator.createSlimeRod());
         NamespacedKey pro = new NamespacedKey(anendrod.getInstance(),"pro");
         ShapelessRecipe proRod = new ShapelessRecipe(pro,rodItemGenerator.createRegularProRod());
+        NamespacedKey handcuff = new NamespacedKey(anendrod.getInstance(),"cuff");
+        ShapelessRecipe handcuffs = new ShapelessRecipe(pro,Handcuffs.getItem());
 
         //此处注册配方物品
         regularRod.addIngredient(1, Material.END_ROD);
         slimeRod.addIngredient(1,Material.END_ROD);
         slimeRod.addIngredient(1,Material.SLIME_BALL);
         proRod.addIngredient(9,Material.END_ROD);
+        handcuffs.addIngredient(2,Material.IRON_INGOT);
+        handcuffs.addIngredient(2,Material.CHAIN);
 
         //此处注册配方
 
         getServer().addRecipe(regularRod);
         getServer().addRecipe(slimeRod);
         getServer().addRecipe(proRod);
+        getServer().addRecipe(handcuffs);
 
         //配方解锁方法和确保玩家标签
         getServer().getPluginManager().registerEvents(new Listener() {
@@ -78,6 +88,7 @@ public final class anendrod extends JavaPlugin {
                     if (event.getPlayer().isOnline()) {
                         event.getPlayer().discoverRecipes(Collections.singletonList(regular));
                         event.getPlayer().discoverRecipes(Collections.singletonList(slime));
+                        getServer().addRecipe(handcuffs);
                         event.getPlayer().discoverRecipes(Collections.singletonList(pro));
                         if (ConfigManager.ENABLE_PACK) {
                             event.getPlayer().setResourcePack(ConfigManager.PACK_URL);//材质包
@@ -91,8 +102,10 @@ public final class anendrod extends JavaPlugin {
             p.discoverRecipes(Collections.singletonList(regular));
             p.discoverRecipes(Collections.singletonList(slime));
             p.discoverRecipes(Collections.singletonList(pro));
+            p.discoverRecipes(Collections.singletonList(handcuff));
         }//为在线猫粮注册配方
-        new DeathRunnable().runTaskTimer(this, 0L, 1L); //计时器！！！
+        new DeathRunnable().runTaskTimer(this, 0L, 20*1L); //计时器！！！
+        new HandcuffsRunnable().runTaskTimer(this, 0L,20* 5L); //计时器！！！
     }
 
     @Override
