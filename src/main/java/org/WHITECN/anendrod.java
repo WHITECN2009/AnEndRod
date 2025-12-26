@@ -111,7 +111,7 @@ public final class anendrod extends JavaPlugin {
             player.discoverRecipes(Collections.singletonList(key));
         }//为在线猫粮注册配方
         new DeathRunnable().runTaskTimer(this, 0L, 20*1L); //计时器！！！
-        new HandcuffsRunnable().runTaskTimer(this, 0L,20* 5L); //计时器！！！
+        new HandcuffsRunnable().runTaskTimer(this, 0L,20* 1L); //计时器！！！
     }
 
     @Override
