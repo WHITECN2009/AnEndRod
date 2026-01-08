@@ -12,10 +12,15 @@ repositories {
         name = "spigotmc-repo"
         url = "https://hub.spigotmc.org/nexus/content/repositories/snapshots/"
     }
+    maven {
+        url = 'https://repo.extendedclip.com/releases/'
+    }
+
 }
 
 dependencies {
     compileOnly("org.spigotmc:spigot-api:1.20.1-R0.1-SNAPSHOT")
+    compileOnly 'me.clip:placeholderapi:2.11.7'
 }
 
 tasks {
