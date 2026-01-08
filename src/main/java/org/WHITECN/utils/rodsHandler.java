@@ -46,6 +46,9 @@ public class rodsHandler {
         tagUtils.ensureTag(target,"rodUsed","0");
         tagUtils.setTag(target,"rodUsed",String.valueOf(Integer.parseInt(tagUtils.getTag(target,"rodUsed"))+1));
         AdvancementHandler.advancementTest(target);
+
+        SQLiteUtils.setCTCount(player.getName(),SQLiteUtils.getCTCount(player.getName())+1);
+        SQLiteUtils.setChaCount(target.getName(),SQLiteUtils.getChaCount(target.getName())+1);
     }
     public static void handleSlimeRod(Player player,Player target){
         target.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS,40,0));
@@ -65,6 +68,9 @@ public class rodsHandler {
         tagUtils.ensureTag(target,"rodUsed","0");
         tagUtils.setTag(target,"rodUsed",String.valueOf(Integer.parseInt(tagUtils.getTag(target,"rodUsed"))+1));
         AdvancementHandler.advancementTest(target);
+
+        SQLiteUtils.setCTCount(player.getName(),SQLiteUtils.getCTCount(player.getName())+1);
+        SQLiteUtils.setChaCount(target.getName(),SQLiteUtils.getChaCount(target.getName())+1);
     }
 
 
@@ -74,6 +80,8 @@ public class rodsHandler {
         player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS,100 * 20, 3));
         player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 80 * 20, 3));
         player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 100 * 20, 3));
+
+        SQLiteUtils.setChaCount(player.getName(),SQLiteUtils.getChaCount(player.getName())+1);
         //持续80喵
         new BukkitRunnable() {
             private int t = 0; // 当前 tick喵
