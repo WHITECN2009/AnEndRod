@@ -25,6 +25,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -41,24 +42,28 @@ public final class anendrod extends JavaPlugin {
         logger = getLogger();
         logger.info("插件已启用喵");
         SQLiteUtils.init(this); //初始化数据库utils
-        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            getLogger().info("P!A!P!I!");
-            placeholders = new Placeholders();
-            if (placeholders.register()) {
-                getLogger().info("PAPI占位符注册成功！");
-            } else {
-                getLogger().warning("PAPI占位符注册失败！");
-            }
-        } else {
-            getLogger().warning("或许有了PAPI会更好？");
-        }
         Objects.requireNonNull(this.getCommand("rodmerge")).setExecutor(new rodMerge(this));
         getServer().getPluginManager().registerEvents(new SlimeRod(),this);
         getServer().getPluginManager().registerEvents(new RegularRod(),this);
         getServer().getPluginManager().registerEvents(new RegularProRod(),this);
         getServer().getPluginManager().registerEvents(new DeathListener(this),this);
         getServer().getPluginManager().registerEvents(new HandcuffsAndKey(),this);
-
+        getServer().getPluginManager().registerEvents(new HandcuffsAndKey(),this);
+        Bukkit.getPluginManager().registerEvents(new Listener() {
+            @EventHandler
+            public void onPluginEnable(PluginEnableEvent event) {
+                if (event.getPlugin().getName().equalsIgnoreCase("PlaceholderAPI")) {
+                    getLogger().info("PAPI...");
+                    if (placeholders != null && placeholders.isRegistered()) {
+                        placeholders.unregister();
+                    }
+                    placeholders = new Placeholders();
+                    if (placeholders.register()) {
+                        getLogger().info("P!A!P!I!");
+                    }
+                }
+            }
+        }, this);
         saveResource("AnEndRod_Pack.zip", true);
         ConfigManager.loadConfig(this); //加载配置文件
         tagUtils.init(this);
@@ -132,6 +137,7 @@ public final class anendrod extends JavaPlugin {
     @Override
     public void onDisable() {
         logger.info("插件已禁用喵");
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) return;
         if (placeholders != null) {
             placeholders.unregister();
         }

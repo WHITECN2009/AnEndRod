@@ -4,9 +4,12 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.WHITECN.utils.SQLiteUtils;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.server.PluginEnableEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class Placeholders extends PlaceholderExpansion {
+public class Placeholders extends PlaceholderExpansion implements Listener{
     @Override
     public @NotNull String getAuthor() {
         return "N501YHappy";

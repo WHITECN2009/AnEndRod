@@ -7,6 +7,7 @@ load: STARTUP
 authors: [ WHITECN_凌星 ]
 description: "可插入末地烛....但是插件版?"
 softdepend: ["PlaceholderAPI"]
+loadbefore: [PlaceholderAPI]
 website: https://space.bilibili.com/598999070
 commands:
   rodmerge:

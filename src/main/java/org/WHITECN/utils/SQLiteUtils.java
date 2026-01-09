@@ -1,6 +1,8 @@
 package org.WHITECN.utils;
 
 import org.bukkit.plugin.Plugin;
+
+import java.io.File;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,14 +14,21 @@ public class SQLiteUtils {
     public static void init(Plugin plugin){
         SQLiteUtils.plugin = plugin;
         try {
+            File dataFolder = plugin.getDataFolder();
+            if (!dataFolder.exists()) dataFolder.mkdirs();
+            File dbFile = new File(dataFolder, "nekodata.db");
+            String dbPath = dbFile.getAbsolutePath();
             Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite:nekodata.db");
+            c = DriverManager.getConnection("jdbc:sqlite:" + dbPath);
+
+            plugin.getLogger().info("Connected! " + dbPath);
             create_Table();
+
         } catch (SQLException e) {
-            plugin.getLogger().severe(e.getMessage());
+            plugin.getLogger().severe("数据库连接失败: " + e.getMessage());
             throw new RuntimeException(e);
         } catch (ClassNotFoundException e) {
-            plugin.getLogger().severe(e.getMessage());
+            plugin.getLogger().severe("SQLite驱动未找到: " + e.getMessage());
             throw new RuntimeException(e);
         }
     }

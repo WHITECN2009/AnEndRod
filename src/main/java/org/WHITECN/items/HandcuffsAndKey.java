@@ -37,7 +37,7 @@ public class HandcuffsAndKey implements Listener{
         ItemStack main = event.getOffHandItem(); //实际上是获取切换 到 副手的物品 即切换前主手的物品
         ItemStack off = event.getMainHandItem(); //我不知道为什么要这样设置这个API 这玩意好他妈怪
         
-        if (main == null || off == null) return;
+            if (main == null || off == null) return;
         if (!main.hasItemMeta() || !off.hasItemMeta()) return;
 
         /* 名字过滤：主手必须是手铐，副手必须是钥匙 */
@@ -159,6 +159,7 @@ public class HandcuffsAndKey implements Listener{
 
     @EventHandler
     public void checkSelfCuff(PlayerInteractEvent event) {
+        if (event.getItem() == null) return;
         if (event.getPlayer().getInventory().getItemInMainHand().getItemMeta() != null || event.getPlayer().getInventory().getItemInOffHand().getItemMeta() != null) {
             if (event.getItem().getItemMeta().getDisplayName().equals("§d手铐♥")) {
                 event.setCancelled(true);
