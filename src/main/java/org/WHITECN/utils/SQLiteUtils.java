@@ -16,7 +16,7 @@ public class SQLiteUtils {
         try {
             File dataFolder = plugin.getDataFolder();
             if (!dataFolder.exists()) dataFolder.mkdirs();
-            File dbFile = new File(dataFolder, "nekodata.db");
+            File dbFile = new File(dataFolder, "userdata.db");
             String dbPath = dbFile.getAbsolutePath();
             Class.forName("org.sqlite.JDBC");
             c = DriverManager.getConnection("jdbc:sqlite:" + dbPath);
