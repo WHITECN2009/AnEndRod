@@ -37,90 +37,110 @@ public class rodMerge implements CommandExecutor, Listener ,TabCompleter{
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
-            if (!sender.isOp()) {
-                sender.sendMessage(prefix + "§c你没有权限使用 reload 喵~");
+        if (args.length == 0 || args[0].equalsIgnoreCase("gui")) {
+            if (!(sender instanceof Player)) {
+                sender.sendMessage(prefix + "§c该命令仅能被玩家执行喵");
                 return true;
             }
-            ConfigManager.loadConfig(anendrod.getInstance());
-            sender.sendMessage(prefix + "§a配置已重载喵~");
+            Player player = (Player) sender;
+            openGUI(player);
             return true;
         }
 
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(prefix + "§c该命令仅能被玩家执行喵");
-            return true;
-        }
+        String subCommand = args[0].toLowerCase();
 
-        Player player = (Player) sender;
-
-        if (args.length == 3) {
-            switch (args[1].toLowerCase()) {
-                case "setrodused":
-                    if (!sender.isOp()) {
-                        sender.sendMessage(prefix + "§c你没有权限使用 setrodused 喵~");
-                        return true;
-                    }
-                    try{
-                        Player target = Bukkit.getPlayer(args[1]);
-                        int usedCount = Integer.parseInt(args[2]);
-                        if (target == null){
-                            player.sendMessage(prefix + "§c未查找到该玩家喵");
-                            return true;
-                        }
-                        tagUtils.ensureTag(target,"rodUsed","0");
-                        tagUtils.setTag(target,"rodUsed",String.valueOf(usedCount));
-                    }catch (ClassCastException e){
-                        player.sendMessage(prefix + "§c请按照提示要求输入喵!");
-                        return true;
-                    }
+        switch (subCommand) {
+            case "reload":
+                if (!sender.isOp()) {
+                    sender.sendMessage(prefix + "§c你没有权限使用 reload 喵~");
                     return true;
+                }
+                ConfigManager.loadConfig(anendrod.getInstance());
+                sender.sendMessage(prefix + "§a配置已重载喵~");
+                return true;
 
-                case "getrodused":
-                    if (!sender.isOp()) {
-                        sender.sendMessage(prefix + "§c你没有权限使用 setrodused 喵~");
-                        return true;
-                    }
+            case "togglecuff":
+                if (!(sender instanceof Player)) {
+                    sender.sendMessage(prefix + "§c该命令仅能被玩家执行喵");
+                    return true;
+                }
+                Player player = (Player) sender;
+                tagUtils.ensureTag(player, "canCuff", "false");
+                if (tagUtils.getTag(player, "canCuff").equals("false")) {
+                    tagUtils.setTag(player, "canCuff", "true");
+                    player.sendMessage(prefix + "§a已开启手铐玩法喵！");
+                } else {
+                    tagUtils.setTag(player, "canCuff", "false");
+                    player.sendMessage(prefix + "§c已关闭手铐玩法喵！");
+                }
+                return true;
+
+            case "setrodused":
+                if (!sender.isOp()) {
+                    sender.sendMessage(prefix + "§c你没有权限使用 setrodused 喵~");
+                    return true;
+                }
+                if (args.length < 3) {
+                    sender.sendMessage(prefix + "§c用法: /rodmerge setrodused <玩家> <次数>");
+                    return true;
+                }
+                try {
                     Player target = Bukkit.getPlayer(args[1]);
                     if (target == null) {
-                        player.sendMessage(prefix + "§c未查找到该玩家喵");
+                        sender.sendMessage(prefix + "§c未查找到该玩家喵");
                         return true;
                     }
+                    int usedCount = Integer.parseInt(args[2]);
                     tagUtils.ensureTag(target, "rodUsed", "0");
-                    sender.sendMessage(prefix + "§b该玩家的末地烛使用次数: §a" + tagUtils.getTag(target, "rodUsed"));
+                    tagUtils.setTag(target, "rodUsed", String.valueOf(usedCount));
+                    sender.sendMessage(prefix + "§a已将玩家 " + target.getName() + " 的使用次数设置为 " + usedCount + " 喵~");
+                } catch (NumberFormatException e) {
+                    sender.sendMessage(prefix + "§c请输入有效的整数喵!");
+                }
+                return true;
 
-                case "togglecuff":
-                    tagUtils.ensureTag(player, "canCuff", "false");
-                    if (tagUtils.getTag(player,"canCuff").equals("false")){
-                        tagUtils.setTag(player, "canCuff", "true");
-                        player.sendMessage(prefix + "§a已开启手铐玩法喵！");
-                    }else{
-                        tagUtils.setTag(player, "canCuff", "false");
-                        player.sendMessage(prefix + "§c已关闭手铐玩法喵！");
-                    }
-            }
+            case "getrodused":
+                if (!sender.isOp()) {
+                    sender.sendMessage(prefix + "§c你没有权限使用 getrodused 喵~");
+                    return true;
+                }
+                if (args.length < 2) {
+                    sender.sendMessage(prefix + "§c用法: /rodmerge getrodused <玩家>");
+                    return true;
+                }
+                Player target = Bukkit.getPlayer(args[1]);
+                if (target == null) {
+                    sender.sendMessage(prefix + "§c未查找到该玩家喵");
+                    return true;
+                }
+                tagUtils.ensureTag(target, "rodUsed", "0");
+                sender.sendMessage(prefix + "§b该玩家 " + target.getName() + " 的末地烛使用次数: §a" + tagUtils.getTag(target, "rodUsed"));
+                return true;
+
+            default:
+                sender.sendMessage(prefix + "§c未知子命令喵。使用 /rodmerge gui 打开菜单。");
+                return true;
         }
-        if (args.length == 0 || args[0].equalsIgnoreCase("gui")) {
-            Inventory mergeUI = Bukkit.createInventory(player, 18, "§9§l兑换小玩具");
+    }
 
-            //TODO:此处注册新的物品
-            ItemStack regularRod = createMenuItem(Material.END_ROD, "§2普通末地烛", "§7没什么特别的 就是末地烛哦");
-            ItemStack slimeRod = createMenuItem(Material.END_ROD, "§a粘液§2末地烛", "§7一个黏糊糊的末地烛哦");
-            ItemStack proRod = createMenuItem(Material.END_ROD, "§bPro§2末地烛", "§7普通末地烛的§bPro§7版");
-            ItemStack handCuff = createMenuItem(Material.CHAINMAIL_CHESTPLATE, "§d手铐♥", "§d这是一个手铐，可以限制玩家的行动");
-            ItemStack keyItem = createMenuItem(Material.TRIPWIRE_HOOK, "§7钥匙", "§d这是一个钥匙，可以解锁也可以上锁");
+    private void openGUI(Player player) {
+        Inventory mergeUI = Bukkit.createInventory(player, 18, "§9§l兑换小玩具");
 
-            //TODO:此处加载进菜单
-            mergeUI.addItem(regularRod);
-            mergeUI.addItem(slimeRod);
-            mergeUI.addItem(proRod);
-            mergeUI.setItem(9, handCuff);
-            mergeUI.setItem(10, keyItem);
+        //TODO:此处注册新的物品
+        ItemStack regularRod = createMenuItem(Material.END_ROD, "§2普通末地烛", "§7没什么特别的 就是末地烛哦");
+        ItemStack slimeRod = createMenuItem(Material.END_ROD, "§a粘液§2末地烛", "§7一个黏糊糊的末地烛哦");
+        ItemStack proRod = createMenuItem(Material.END_ROD, "§bPro§2末地烛", "§7普通末地烛的§bPro§7版");
+        ItemStack handCuff = createMenuItem(Material.CHAINMAIL_CHESTPLATE, "§d手铐♥", "§d这是一个手铐，可以限制玩家的行动");
+        ItemStack keyItem = createMenuItem(Material.TRIPWIRE_HOOK, "§7钥匙", "§d这是一个钥匙，可以解锁也可以上锁");
 
-            player.openInventory(mergeUI);
-            return true;
-        }
-        return true;
+        //TODO:此处加载进菜单
+        mergeUI.addItem(regularRod);
+        mergeUI.addItem(slimeRod);
+        mergeUI.addItem(proRod);
+        mergeUI.setItem(9, handCuff);
+        mergeUI.setItem(10, keyItem);
+
+        player.openInventory(mergeUI);
     }
     @Override
     public List<String> onTabComplete(CommandSender sender, Command cmd, String alias, String[] args) {
