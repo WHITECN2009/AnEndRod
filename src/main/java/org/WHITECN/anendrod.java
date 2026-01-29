@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import org.WHITECN.commands.rodMerge;
 import org.WHITECN.items.HandcuffsAndKey;
 import org.WHITECN.listeners.DeathListener;
+import org.WHITECN.listeners.SlimesListener;
 import org.WHITECN.rods.RegularProRod;
 import org.WHITECN.rods.RegularRod;
 import org.WHITECN.rods.SlimeRod;
@@ -48,6 +49,7 @@ public final class anendrod extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new RegularProRod(),this);
         getServer().getPluginManager().registerEvents(new DeathListener(this),this);
         getServer().getPluginManager().registerEvents(new HandcuffsAndKey(),this);
+        getServer().getPluginManager().registerEvents(new SlimesListener(),this);
         Bukkit.getPluginManager().registerEvents(new Listener() {
             @EventHandler
             public void onPluginEnable(PluginEnableEvent event) {
