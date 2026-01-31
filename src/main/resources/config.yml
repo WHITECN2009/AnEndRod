@@ -1,4 +1,5 @@
 enable_pack: true #默认开启材质包，改成false就可以关掉啦
+summon_slime: true #使用粘液末地烛的时候是否生成史莱姆
 pro_spawn_water: true #使用Pro末地烛的时候是否生成水方块
 pack_url: "https://bgithub.xyz/WHITECN2009/AnEndRod/raw/refs/heads/master/src/main/resources/AnEndRod_Pack.zip" 
 #这个材质包连接可能会失效，失效找作者去补喵！

@@ -54,11 +54,13 @@ public class rodsHandler {
         target.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS,40,0));
         target.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION,100,1));
         target.damage(1d);
-        for (int i = 0; i < Math.abs(random.nextInt(2)); i++) {
-            Slime entity = (Slime) target.getWorld().spawnEntity(target.getLocation(), EntityType.SLIME);
-            entity.setCustomNameVisible(true);
-            entity.setCustomName(ChatColor.LIGHT_PURPLE + target.getName() + "的末地烛的" + ChatColor.GREEN + "附着物");
-            entity.setSize(1);
+        if (ConfigManager.SUMMON_SLIME) {
+            for (int i = 0; i < Math.abs(random.nextInt(2)); i++) {
+                Slime entity = (Slime) target.getWorld().spawnEntity(target.getLocation(), EntityType.SLIME);
+                entity.setCustomNameVisible(true);
+                entity.setCustomName(ChatColor.LIGHT_PURPLE + target.getName() + "的末地烛的" + ChatColor.GREEN + "附着物");
+                entity.setSize(1);
+            }
         }
         player.setCooldown(Material.END_ROD,10);
         target.setNoDamageTicks(5);
