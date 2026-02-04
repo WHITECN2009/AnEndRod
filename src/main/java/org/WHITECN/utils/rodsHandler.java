@@ -40,7 +40,7 @@ public class rodsHandler {
         target.damage(1.0d);
         player.setCooldown(Material.END_ROD,10);
         target.setNoDamageTicks(5);
-        target.playSound(target, Insert_sounds.get(random.nextInt(Insert_sounds.size())), 100.0f, 1.0f);
+        target.playSound(target, Insert_sounds.get(random.nextInt(Insert_sounds.size())), 1.0f, 1.0f);
         target.spawnParticle(Particle.HEART,target.getLocation(),30,1.5d,1.0d,1.5d);
         target.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§d呜嗯...进去了~"));
         tagUtils.ensureTag(target,"rodUsed","0");
@@ -64,7 +64,7 @@ public class rodsHandler {
         }
         player.setCooldown(Material.END_ROD,10);
         target.setNoDamageTicks(5);
-        target.playSound(player,Insert_sounds.get(random.nextInt(Insert_sounds.size())), 100.0f, 1.0f);
+        target.playSound(player,Insert_sounds.get(random.nextInt(Insert_sounds.size())), 1.0f, 1.0f);
         target.spawnParticle(Particle.HEART,player.getLocation(),30,1.5d,1.0d,1.5d);
         target.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§d呜嗯...进去了~"));
         tagUtils.ensureTag(target,"rodUsed","0");

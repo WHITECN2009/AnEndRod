@@ -17,6 +17,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -108,11 +110,25 @@ public class HandcuffsAndKey implements Listener{
         ItemStack mainHand = user.getInventory().getItemInMainHand();
         if (!mainHand.hasItemMeta()) return;
         if (tagUtils.getTag(target,"canCuff").equals("false")){
-            user.sendMessage(prefix + "§c该用户已禁用手铐玩法！");
+            user.sendMessage(prefix + "§c该玩家已禁用手铐玩法！");
+            return;
         }
         ItemMeta meta = mainHand.getItemMeta();
         if (!handCuffsName.equals(meta.getDisplayName())) return;
-        if(target.getEquipment().getChestplate() != null) return;
+
+        // 检查目标是否已经佩戴了手铐
+        ItemStack currentChestplate = target.getEquipment().getChestplate();
+        if (currentChestplate != null && currentChestplate.hasItemMeta() && handCuffsName.equals(currentChestplate.getItemMeta().getDisplayName())) {
+            user.sendMessage(prefix + "§c该玩家已经戴着手铐了！");
+            return;
+        }
+
+        // 优先将原有胸甲放入物品栏，如果满了则掉落在地上
+        if (currentChestplate != null && currentChestplate.getType() != Material.AIR) {
+            if (!target.getInventory().addItem(currentChestplate).isEmpty()) {
+                target.getWorld().dropItemNaturally(target.getLocation(), currentChestplate);
+            }
+        }
 
         ItemStack cuffsCopy = mainHand.clone();
         cuffsCopy.setAmount(1);
@@ -164,6 +180,30 @@ public class HandcuffsAndKey implements Listener{
             if (event.getItem().getItemMeta().getDisplayName().equals("§d手铐♥")) {
                 event.setCancelled(true);
                 event.getPlayer().sendMessage(prefix + "§c想要自缚嘛？不可以哦");
+            }
+        }
+    }
+
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent event) {
+        // 阻止直接点击盔甲槽放入手铐
+        if (event.getSlotType() == InventoryType.SlotType.ARMOR && event.getRawSlot() == 6) { // 6 是胸甲槽位
+            ItemStack cursor = event.getCursor();
+            if (cursor != null && cursor.hasItemMeta() && handCuffsName.equals(cursor.getItemMeta().getDisplayName())) {
+                event.setCancelled(true);
+                event.getWhoClicked().sendMessage(prefix + "§c想要自缚嘛？不可以哦");
+                return;
+            }
+        }
+        // 处理 Shift 点击
+        if (event.isShiftClick() && event.getCurrentItem() != null) {
+            ItemStack clicked = event.getCurrentItem();
+            if (clicked.hasItemMeta() && handCuffsName.equals(clicked.getItemMeta().getDisplayName())) {
+                // 如果是玩家自己的背包界面
+                if (event.getInventory().getType() == InventoryType.CRAFTING || event.getInventory().getType() == InventoryType.PLAYER) {
+                    event.setCancelled(true);
+                    event.getWhoClicked().sendMessage(prefix + "§c想要自缚嘛？不可以哦");
+                }
             }
         }
     }
