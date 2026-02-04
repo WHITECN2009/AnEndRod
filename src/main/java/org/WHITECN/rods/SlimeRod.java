@@ -51,17 +51,21 @@ public class SlimeRod implements Listener {
             Player target = (Player) event.getRightClicked();
             ItemStack mainHand = Objects.requireNonNull(player.getEquipment()).getItemInMainHand();
             ItemMeta meta = mainHand.getItemMeta();
-            if (meta != null && meta.getDisplayName().equals("§a粘液§2末地烛") && player.isSneaking() && player.getCooldown(Material.END_ROD) == 0) {
+            if (meta != null && meta.getDisplayName().equals("§a粘液§2末地烛")) {
+                // 拦截粘液末地烛对玩家的交互
                 event.setCancelled(true);
-                if (target.getEquipment().getLeggings() != null){
-                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§c怎么穿着裤子喵!"));
-                    return;
+                
+                if (player.isSneaking() && player.getCooldown(Material.END_ROD) == 0) {
+                    if (target.getEquipment().getLeggings() != null){
+                        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§c怎么穿着裤子喵!"));
+                        return;
+                    }
+                    mainHand.setItemMeta(useCounter.addTime(meta));
+                    meta.setLore(List.of("§7一个黏糊糊的末地烛哦\n","§7已使用 §e" + meta.getPersistentDataContainer().get(new NamespacedKey(anendrod.getInstance(),"useCount"), PersistentDataType.INTEGER) + "§7 次"));
+                    mainHand.setItemMeta(meta);
+                    DeathStatus.add(player.getUniqueId(), target.getUniqueId(), 10*20, mainHand); //10second,这10second里面玩家死了就是被我插的呢！
+                    rodsHandler.handleSlimeRod(event.getPlayer(),target);
                 }
-                mainHand.setItemMeta(useCounter.addTime(meta));
-                meta.setLore(List.of("§7一个黏糊糊的末地烛哦\n","§7已使用 §e" + meta.getPersistentDataContainer().get(new NamespacedKey(anendrod.getInstance(),"useCount"), PersistentDataType.INTEGER) + "§7 次"));
-                mainHand.setItemMeta(meta);
-                DeathStatus.add(player.getUniqueId(), target.getUniqueId(), 10*20, mainHand); //10second,这10second里面玩家死了就是被我插的呢！
-                rodsHandler.handleSlimeRod(event.getPlayer(),target);
             }
         }
     }

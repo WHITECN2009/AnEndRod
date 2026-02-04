@@ -154,17 +154,14 @@ public final class anendrod extends JavaPlugin {
      */
     private void removeRecipeIfExists(String recipeKey) {
         NamespacedKey key = new NamespacedKey(this, recipeKey);
-        Iterator<Recipe> iterator = getServer().recipeIterator();
-
-        while (iterator.hasNext()) {
-            Recipe recipe = iterator.next();
-            if (recipe instanceof Keyed) {
-                if (((Keyed) recipe).getKey().equals(key)) {
-                    iterator.remove();
-                    Bukkit.getConsoleSender().sendMessage("§a[AnEndRod] §f已移除旧配方: " + recipeKey);
-                    return;
-                }
-            }
+        try {
+            // 混合端中可能存在部分 Mod 注册了非 3x3 的特殊配方
+            // 使用 Iterator 遍历会导致 Bukkit 校验配方行数时抛出 IllegalArgumentException
+            // 直接通过 NamespacedKey 移除避免校验
+            getServer().removeRecipe(key);
+            Bukkit.getConsoleSender().sendMessage("§a[AnEndRod] §f已成功移除配方: " + recipeKey);
+        } catch (Exception e) {
+            // 如果配方不存在或该环境不支持直接移除，无需处理
         }
     }
 }
