@@ -43,12 +43,20 @@ public class rodsHandler {
         target.playSound(target, Insert_sounds.get(random.nextInt(Insert_sounds.size())), 1.0f, 1.0f);
         target.spawnParticle(Particle.HEART,target.getLocation(),30,1.5d,1.0d,1.5d);
         target.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§d呜嗯...进去了~"));
-        tagUtils.ensureTag(target,"rodUsed","0");
-        tagUtils.setTag(target,"rodUsed",String.valueOf(Integer.parseInt(tagUtils.getTag(target,"rodUsed"))+1));
+        
+        // 性能优化：使用 PDC 存储统计数据，减少数据库频繁 IO
+        tagUtils.ensureTag(target, "rodUsed", "0");
+        int rodUsed = Integer.parseInt(tagUtils.getTag(target, "rodUsed")) + 1;
+        tagUtils.setTag(target, "rodUsed", String.valueOf(rodUsed));
         AdvancementHandler.advancementTest(target);
 
-        SQLiteUtils.setCTCount(player.getName(),SQLiteUtils.getCTCount(player.getName())+1);
-        SQLiteUtils.setChaCount(target.getName(),SQLiteUtils.getChaCount(target.getName())+1);
+        // 异步更新数据库统计，避免阻塞主线程
+        String playerName = player.getName();
+        String targetName = target.getName();
+        Bukkit.getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(anendrod.class), () -> {
+            SQLiteUtils.setCTCount(playerName, SQLiteUtils.getCTCount(playerName) + 1);
+            SQLiteUtils.setChaCount(targetName, SQLiteUtils.getChaCount(targetName) + 1);
+        });
     }
     public static void handleSlimeRod(Player player,Player target){
         target.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS,40,0));
@@ -67,12 +75,20 @@ public class rodsHandler {
         target.playSound(player,Insert_sounds.get(random.nextInt(Insert_sounds.size())), 1.0f, 1.0f);
         target.spawnParticle(Particle.HEART,player.getLocation(),30,1.5d,1.0d,1.5d);
         target.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§d呜嗯...进去了~"));
-        tagUtils.ensureTag(target,"rodUsed","0");
-        tagUtils.setTag(target,"rodUsed",String.valueOf(Integer.parseInt(tagUtils.getTag(target,"rodUsed"))+1));
+        
+        // 性能优化：使用 PDC 存储统计数据
+        tagUtils.ensureTag(target, "rodUsed", "0");
+        int rodUsed = Integer.parseInt(tagUtils.getTag(target, "rodUsed")) + 1;
+        tagUtils.setTag(target, "rodUsed", String.valueOf(rodUsed));
         AdvancementHandler.advancementTest(target);
 
-        SQLiteUtils.setCTCount(player.getName(),SQLiteUtils.getCTCount(player.getName())+1);
-        SQLiteUtils.setChaCount(target.getName(),SQLiteUtils.getChaCount(target.getName())+1);
+        // 异步更新数据库统计
+        String playerName = player.getName();
+        String targetName = target.getName();
+        Bukkit.getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(anendrod.class), () -> {
+            SQLiteUtils.setCTCount(playerName, SQLiteUtils.getCTCount(playerName) + 1);
+            SQLiteUtils.setChaCount(targetName, SQLiteUtils.getChaCount(targetName) + 1);
+        });
     }
 
 

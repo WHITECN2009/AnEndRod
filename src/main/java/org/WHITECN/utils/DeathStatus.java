@@ -84,7 +84,8 @@ public class DeathStatus {
         return Objects.hash(player, target, time, itemStack);
     }
     public static void add(UUID player, UUID target, double time, ItemStack itemStack) {
-        DeathListener.mStatus.compute(player, (k, old) -> {
+        // 使用 target 作为 Key，因为死亡事件是针对 target (受害者) 触发的
+        DeathListener.mStatus.compute(target, (k, old) -> {
             if (old == null) {
                 return new DeathStatus(player, target, time, itemStack);
             }

@@ -29,10 +29,11 @@ public class DeathListener implements Listener {
     public void onDeath(PlayerDeathEvent event) {
         Player player = event.getEntity();
         UUID pUuid = player.getUniqueId();
+        
+        // 现在 DeathStatus.add 已经统一使用 target (受害者) 作为 Key
         if (mStatus.containsKey(pUuid)) {
             DeathStatus status = mStatus.remove(pUuid);
             event.setDeathMessage(null);
-
             Bukkit.getServer().spigot().broadcast(getDeathMessage(status));
         }
     }
@@ -42,8 +43,26 @@ public class DeathListener implements Listener {
         UUID playerUUID = status.getPlayer();
         ItemStack item  = status.getItemStack();
 
-        String targetName =ChatColor.YELLOW+ Bukkit.getOfflinePlayer(targetUUID).getName();
-        String playerName =ChatColor.YELLOW+ Bukkit.getOfflinePlayer(playerUUID).getName();
+        // 修复 null 问题：由于插得太快，OfflinePlayer 缓存可能失效或未加载
+        // 优先从在线玩家获取名称，如果获取不到再尝试从缓存或历史记录获取
+        String targetName;
+        Player onlineTarget = Bukkit.getPlayer(targetUUID);
+        if (onlineTarget != null) {
+            targetName = ChatColor.YELLOW + onlineTarget.getName();
+        } else {
+            String offlineName = Bukkit.getOfflinePlayer(targetUUID).getName();
+            targetName = ChatColor.YELLOW + (offlineName != null ? offlineName : "神秘玩家");
+        }
+
+        String playerName;
+        Player onlinePlayer = Bukkit.getPlayer(playerUUID);
+        if (onlinePlayer != null) {
+            playerName = ChatColor.YELLOW + onlinePlayer.getName();
+        } else {
+            String offlineName = Bukkit.getOfflinePlayer(playerUUID).getName();
+            playerName = ChatColor.YELLOW + (offlineName != null ? offlineName : "神秘玩家");
+        }
+
         boolean suicide   = targetUUID.equals(playerUUID);
         
         String itemName;
