@@ -9,6 +9,8 @@
 ## 🌟 特别鸣谢
 - 灵感缪斯：[@CrystalNeko](https://github.com/CSneko)(rua~)
 - 功能 & 代 码：[@N501YHappy](https://github.com/N501YHappy)(才...才不是因为他威胁才写上去的喵！)
+- 纠错和改进：
+[@XUANHLGG](https://github.com/XUANHLGG)
 
 &gt; 记得支持他的 [toNeko](https://github.com/CSneko/toNeko) 模组!
 
