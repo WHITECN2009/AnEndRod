@@ -7,6 +7,7 @@ import java.util.Objects;
 import org.WHITECN.anendrod;
 import org.WHITECN.utils.KeyGen;
 import org.WHITECN.utils.tagUtils;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
