@@ -1,1 +1,11 @@
 .idea\
+
+# Gradle
+.gradle/
+build/
+*.jar
+
+# IDE
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/shelf/
