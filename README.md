@@ -23,6 +23,7 @@
 | 普通末地烛  | 末地烛×1         |
 | 粘液末地烛  | 末地烛×1 + 粘液球×1 | 
 | Pro末地烛 | 末地烛×9         |
+| 药水末地烛  | 末地烛×1 + 玻璃瓶x1 |
 | 手铐     | 铁锭x2 + 铁链x2   |
 | 钥匙     | 铁锭x1 + 木棍x1   |
 
@@ -85,3 +86,5 @@ pack_url: "https://bgithub.xyz/WHITECN2009/AnEndRod/raw/refs/heads/master/src/ma
 #这个材质包连接可能会失效，失效找作者去补喵！
 ```
 ---
+![bstats](https://bstats.org/signatures/bukkit/AnEndRod.svg)
+

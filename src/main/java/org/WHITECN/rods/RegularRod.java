@@ -2,6 +2,7 @@ package org.WHITECN.rods;
 
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.WHITECN.Vars;
 import org.WHITECN.anendrod;
 import org.WHITECN.utils.SQLiteUtils;
 import org.bukkit.Material;
@@ -30,11 +31,11 @@ public class RegularRod implements Listener {
         ItemStack mainHand = event.getItem();
         if (mainHand != null && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
             ItemMeta meta = mainHand.getItemMeta();
-            if (meta != null && meta.getDisplayName().equals("§2普通末地烛")) {
+            if (meta != null && meta.getDisplayName().equals(Vars.REGULAR_ROD_NAME)) {
                 event.setCancelled(true);
                 if (!player.isSneaking() && player.getCooldown(Material.END_ROD) == 0){
                     mainHand.setItemMeta(useCounter.addTime(meta));
-                    meta.setLore(List.of("§7没什么特别的 就是末地烛哦\n","§7已使用 §e" + meta.getPersistentDataContainer().get(new NamespacedKey(anendrod.getInstance(),"useCount"), PersistentDataType.INTEGER) + "§7 次"));
+                    meta.setLore(List.of("§7没什么特别的 就是末地烛哦\n","§7已使用 §e" + meta.getPersistentDataContainer().get(new NamespacedKey(anendrod.getInstance(), Vars.NAMESPACE_COUNT), PersistentDataType.INTEGER) + "§7 次"));
                     mainHand.setItemMeta(meta);
                     DeathStatus.add(player.getUniqueId(), player.getUniqueId(), 10, mainHand);
                     rodsHandler.handleRegularRod(player,player);
@@ -52,7 +53,7 @@ public class RegularRod implements Listener {
             Player target = (Player) event.getRightClicked();
             ItemStack mainHand = Objects.requireNonNull(player.getEquipment()).getItemInMainHand();
             ItemMeta meta = mainHand.getItemMeta();
-            if (meta != null && meta.getDisplayName().equals("§2普通末地烛")) {
+            if (meta != null && meta.getDisplayName().equals(Vars.REGULAR_ROD_NAME)) {
                 // 拦截末地烛对玩家的交互
                 event.setCancelled(true);
                 
@@ -62,7 +63,7 @@ public class RegularRod implements Listener {
                         return;
                     }
                     mainHand.setItemMeta(useCounter.addTime(meta));
-                    meta.setLore(List.of("§7没什么特别的 就是末地烛哦\n","§7已使用 §e" + meta.getPersistentDataContainer().get(new NamespacedKey(anendrod.getInstance(),"useCount"), PersistentDataType.INTEGER) + "§7 次"));
+                    meta.setLore(List.of("§7没什么特别的 就是末地烛哦\n","§7已使用 §e" + meta.getPersistentDataContainer().get(new NamespacedKey(anendrod.getInstance(), Vars.NAMESPACE_COUNT), PersistentDataType.INTEGER) + "§7 次"));
                     mainHand.setItemMeta(meta);
                     DeathStatus.add(player.getUniqueId(), target.getUniqueId(), 10, mainHand);
                     rodsHandler.handleRegularRod(event.getPlayer(),target);

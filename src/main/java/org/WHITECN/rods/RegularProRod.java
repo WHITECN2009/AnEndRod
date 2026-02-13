@@ -3,6 +3,7 @@ package org.WHITECN.rods;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.WHITECN.Vars;
 import org.WHITECN.anendrod;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -33,11 +34,11 @@ public class RegularProRod implements Listener {
         ItemStack mainHand = event.getItem();
         if (mainHand != null && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
             ItemMeta meta = mainHand.getItemMeta();
-            if (meta != null && meta.getDisplayName().equals("§bPro§2末地烛")) {
+            if (meta != null && meta.getDisplayName().equals(Vars.PRO_ROD_NAME)) {
                 event.setCancelled(true);
                 if (!player.isSneaking() && player.getCooldown(Material.END_ROD) == 0){
                     mainHand.setItemMeta(useCounter.addTime(meta));
-                    meta.setLore(List.of("§7普通末地烛的§bPro§7版\n","§7已使用 §e" + meta.getPersistentDataContainer().get(new NamespacedKey(anendrod.getInstance(),"useCount"), PersistentDataType.INTEGER) + "§7 次"));
+                    meta.setLore(List.of("§7普通末地烛的§bPro§7版\n","§7已使用 §e" + meta.getPersistentDataContainer().get(new NamespacedKey(anendrod.getInstance(),Vars.NAMESPACE_COUNT), PersistentDataType.INTEGER) + "§7 次"));
                     mainHand.setItemMeta(meta);
                     rodsHandler.handleRegularProRod(player);
                     DeathStatus.add(player.getUniqueId(), player.getUniqueId(), (80+10)*20, mainHand); //10second,这10second里面玩家死了就是被我插的呢！

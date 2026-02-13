@@ -1,6 +1,7 @@
 package org.WHITECN.utils;
 
 import net.md_5.bungee.api.ChatColor;
+import org.WHITECN.Vars;
 import org.WHITECN.anendrod;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -10,6 +11,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ItemGenerator {
@@ -19,7 +21,7 @@ public class ItemGenerator {
         ItemMeta meta = rod.getItemMeta();
 
         // 设置显示名称
-        meta.setDisplayName("§2普通末地烛");
+        meta.setDisplayName(Vars.REGULAR_ROD_NAME);
 
         // 设置 Lore
         List<String> lore = new ArrayList<>();
@@ -29,7 +31,7 @@ public class ItemGenerator {
 
         // 设置自定义NBT标签
         meta.getPersistentDataContainer().set(
-                new NamespacedKey(anendrod.getInstance(), "useCount"),
+                new NamespacedKey(anendrod.getInstance(), Vars.NAMESPACE_COUNT),
                 PersistentDataType.INTEGER, 0
         );
 
@@ -45,7 +47,7 @@ public class ItemGenerator {
         ItemMeta meta = rod.getItemMeta();
 
         // 设置显示名称
-        meta.setDisplayName("§a粘液§2末地烛");
+        meta.setDisplayName(Vars.SLIME_ROD_NAME);
 
         // 设置 Lore
         List<String> lore = new ArrayList<>();
@@ -55,7 +57,7 @@ public class ItemGenerator {
 
         // 设置自定义NBT标签
         meta.getPersistentDataContainer().set(
-                new NamespacedKey(anendrod.getInstance(), "useCount"),
+                new NamespacedKey(anendrod.getInstance(), Vars.NAMESPACE_COUNT),
                 PersistentDataType.INTEGER, 0
         );
 
@@ -71,7 +73,7 @@ public class ItemGenerator {
         ItemMeta meta = rod.getItemMeta();
 
         // 设置显示名称
-        meta.setDisplayName("§bPro§2末地烛");
+        meta.setDisplayName(Vars.PRO_ROD_NAME);
         //添加附魔效果
         meta.addEnchant(Enchantment.DURABILITY, 0, false);
 
@@ -83,17 +85,49 @@ public class ItemGenerator {
 
         // 设置自定义NBT标签
         meta.getPersistentDataContainer().set(
-                new NamespacedKey(anendrod.getInstance(), "useCount"),
+                new NamespacedKey(anendrod.getInstance(), Vars.NAMESPACE_COUNT),
                 PersistentDataType.INTEGER, 0
         );
 
-        meta.setCustomModelData(3);    //添加特殊数据，用于匹配材质包    
+        meta.setCustomModelData(3);    //添加特殊数据，用于匹配材质包
 
         // 应用修改
         rod.setItemMeta(meta);
         return rod;
     }
+    public static ItemStack createPotionRod() {
+        // 创建基础物品
+        ItemStack rod = new ItemStack(Material.END_ROD);
+        ItemMeta meta = rod.getItemMeta();
 
+        // 设置显示名称
+        meta.setDisplayName(Vars.POTION_ROD_NAME);
+        //添加附魔效果
+        meta.addEnchant(Enchantment.DURABILITY, 0, false);
+
+        // 设置 Lore
+        List<String> lore = Arrays.asList("§7可以沾药水的末地烛哦",
+                "§7已使用 §e" + "0" + "§7 次",
+                "§7上面还没有药水哦，把末地烛扔在地上用喷溅药水砸它试试？");
+        meta.setLore(lore);
+
+        // 设置自定义NBT标签
+        meta.getPersistentDataContainer().set(
+                new NamespacedKey(anendrod.getInstance(), Vars.NAMESPACE_COUNT),
+                PersistentDataType.INTEGER, 0
+        );
+
+        meta.getPersistentDataContainer().set(
+                new NamespacedKey(anendrod.getInstance(), Vars.NAMESPACE_POTION),
+                PersistentDataType.STRING, ""
+        );
+
+        meta.setCustomModelData(4);    //添加特殊数据，用于匹配材质包
+
+        // 应用修改
+        rod.setItemMeta(meta);
+        return rod;
+    }
     public static ItemStack createHandCuffs(){
         ItemStack item = new ItemStack(Material.CHAINMAIL_CHESTPLATE);
         ItemMeta meta = item.getItemMeta();
@@ -123,5 +157,6 @@ public class ItemGenerator {
         );
         item.setItemMeta(meta);
         return item;
+
     }
 }

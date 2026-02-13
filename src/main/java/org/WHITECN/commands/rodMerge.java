@@ -1,11 +1,13 @@
 package org.WHITECN.commands;
 
+import org.WHITECN.Vars;
 import org.WHITECN.anendrod;
 import org.WHITECN.utils.ConfigManager;
 import org.WHITECN.utils.ItemGenerator;
 import org.WHITECN.utils.tagUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -17,12 +19,10 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static org.WHITECN.anendrod.prefix;
 
@@ -104,9 +104,10 @@ public class rodMerge implements CommandExecutor, Listener ,TabCompleter{
             Inventory mergeUI = Bukkit.createInventory(player, 18, "§9§l兑换小玩具");
 
             //TODO:此处注册新的物品
-            ItemStack regularRod = createMenuItem(Material.END_ROD, "§2普通末地烛", "§7没什么特别的 就是末地烛哦");
-            ItemStack slimeRod = createMenuItem(Material.END_ROD, "§a粘液§2末地烛", "§7一个黏糊糊的末地烛哦");
-            ItemStack proRod = createMenuItem(Material.END_ROD, "§bPro§2末地烛", "§7普通末地烛的§bPro§7版");
+            ItemStack regularRod = createMenuItem(Material.END_ROD, Vars.REGULAR_ROD_NAME, "§7没什么特别的 就是末地烛哦");
+            ItemStack slimeRod = createMenuItem(Material.END_ROD, Vars.SLIME_ROD_NAME, "§7一个黏糊糊的末地烛哦");
+            ItemStack proRod = createMenuItem(Material.END_ROD, Vars.PRO_ROD_NAME, "§7普通末地烛的§bPro§7版");
+            ItemStack potionRod = createMenuItem(Material.END_ROD, Vars.POTION_ROD_NAME, "§7可以沾药水的末地烛哦");
             ItemStack handCuff = createMenuItem(Material.CHAINMAIL_CHESTPLATE, "§d手铐♥", "§d这是一个手铐，可以限制玩家的行动");
             ItemStack keyItem = createMenuItem(Material.TRIPWIRE_HOOK, "§7钥匙", "§d这是一个钥匙，可以解锁也可以上锁");
 
@@ -114,6 +115,7 @@ public class rodMerge implements CommandExecutor, Listener ,TabCompleter{
             mergeUI.addItem(regularRod);
             mergeUI.addItem(slimeRod);
             mergeUI.addItem(proRod);
+            mergeUI.addItem(potionRod);
             mergeUI.setItem(9, handCuff);
             mergeUI.setItem(10, keyItem);
 
@@ -168,7 +170,7 @@ public class rodMerge implements CommandExecutor, Listener ,TabCompleter{
 
             // 根据点击的物品执行不同操作
             switch (itemName) {
-                case "§2普通末地烛":
+                case Vars.REGULAR_ROD_NAME:
                     ItemStack regularRod = ItemGenerator.createRegularRod();
                     if (regularCheck(inv)) {
                         inv.addItem(regularRod);
@@ -177,7 +179,7 @@ public class rodMerge implements CommandExecutor, Listener ,TabCompleter{
                     }
                     player.sendMessage(prefix + "§c材料不足以兑换 普通末地烛 喵, 需要:末地烛x1");
                     break;
-                case "§a粘液§2末地烛":
+                case Vars.SLIME_ROD_NAME:
                     ItemStack slimeRod = ItemGenerator.createSlimeRod();
                     if (slimeCheck(inv)) {
                         inv.addItem(slimeRod);
@@ -186,7 +188,7 @@ public class rodMerge implements CommandExecutor, Listener ,TabCompleter{
                     }
                     player.sendMessage(prefix + "§c材料不足以兑换 粘液末地烛 喵, 需要:末地烛x1 粘液球x1");
                     break;
-                case "§bPro§2末地烛":
+                case Vars.PRO_ROD_NAME:
                     ItemStack proRod = ItemGenerator.createRegularProRod();
                     if (proCheck(inv)) {
                         inv.addItem(proRod);
@@ -194,6 +196,15 @@ public class rodMerge implements CommandExecutor, Listener ,TabCompleter{
                         break;
                     }
                     player.sendMessage(prefix + "§c材料不足以兑换 Pro末地烛 喵, 需要:末地烛x9");
+                    break;
+                case Vars.POTION_ROD_NAME:
+                    ItemStack potionRod = ItemGenerator.createPotionRod();
+                    if (potionCheck(inv)) {
+                        inv.addItem(potionRod);
+                        player.sendMessage(prefix + "§2兑换成功喵~");
+                        break;
+                    }
+                    player.sendMessage(prefix + "§c材料不足以兑换 药水末地烛 喵, 需要:末地烛x1 玻璃瓶x1");
                     break;
                 case "§d手铐♥":
                     ItemStack handCuff = ItemGenerator.createHandCuffs();
@@ -403,5 +414,57 @@ public class rodMerge implements CommandExecutor, Listener ,TabCompleter{
         }
 
         return true;
+    }
+
+    /**
+     * 药水末地烛兑换检查（需要：末地烛 x1，玻璃瓶 x1）
+     * 会在满足条件时从背包中扣除对应物品（支持分散在多个槽的堆叠）
+     */
+    private Boolean potionCheck(Inventory inv) {
+        boolean hasEndRod = false;
+        boolean hasGlassBottle = false;
+        int endRodSlot = -1;
+        int glassBottleSlot = -1;
+
+        // 先检测是否同时拥有两个物品
+        for (int i = 0; i < inv.getSize(); i++) {
+            ItemStack item = inv.getItem(i);
+            if (item != null) {
+                // 检测末地烛（没有lore的普通末地烛）
+                if (!hasEndRod && item.getType().equals(Material.END_ROD) &&
+                        !Objects.requireNonNull(item.getItemMeta()).hasLore()) {
+                    hasEndRod = true;
+                    endRodSlot = i;
+                }
+                // 检测玻璃瓶
+                if (!hasGlassBottle && item.getType().equals(Material.GLASS_BOTTLE)) {
+                    hasGlassBottle = true;
+                    glassBottleSlot = i;
+                }
+            }
+        }
+
+        // 如果两个物品都有，则删除它们
+        if (hasEndRod && hasGlassBottle) {
+            // 删除末地烛
+            ItemStack endRod = inv.getItem(endRodSlot);
+            if (endRod.getAmount() > 1) {
+                endRod.setAmount(endRod.getAmount() - 1);
+            } else {
+                inv.setItem(endRodSlot, null);
+            }
+
+            // 删除玻璃瓶
+            ItemStack glassBottle = inv.getItem(glassBottleSlot);
+            if (glassBottle.getAmount() > 1) {
+                glassBottle.setAmount(glassBottle.getAmount() - 1);
+            } else {
+                inv.setItem(glassBottleSlot, null);
+            }
+
+            return true;
+        }
+
+        return false;
     }
 }
