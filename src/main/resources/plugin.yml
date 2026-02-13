@@ -4,7 +4,7 @@ main: org.WHITECN.anendrod
 api-version: '1.20'
 prefix: EndRod
 load: STARTUP
-authors: [ LAZIEST_WOREST_WHITECN_凌星 ]
+authors: [ WHITECN_凌星 ]
 description: "可插入末地烛....但是插件版?"
 softdepend: ["PlaceholderAPI"]
 loadbefore: [PlaceholderAPI]
