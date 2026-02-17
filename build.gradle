@@ -1,12 +1,11 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 plugins {
     id 'java'
     id("xyz.jpenilla.run-paper") version "2.3.1"
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("com.gradleup.shadow") version "8.3.0"
 }
 
 group = 'org.WHITECN'
-version = '2.2.1'
+version = '2.3.0'
 
 repositories {
     mavenCentral()
@@ -33,6 +32,19 @@ tasks {
         // Your plugin's jar (or shadowJar if present) will be used automatically.
         minecraftVersion("1.20")
     }
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
 processResources {

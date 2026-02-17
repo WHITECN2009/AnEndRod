@@ -1,15 +1,13 @@
 package org.WHITECN;
 
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.Objects;
 import java.util.logging.Logger;
 
 import org.WHITECN.commands.rodMerge;
 import org.WHITECN.items.HandcuffsAndKey;
 import org.WHITECN.listeners.DeathListener;
-import org.WHITECN.listeners.DiaoLuoDePenJianYaoshui;
-import org.WHITECN.listeners.SlimesListener;
+import org.WHITECN.listeners.DroppedSplashPotion;
 import org.WHITECN.rods.PotionRod;
 import org.WHITECN.rods.RegularProRod;
 import org.WHITECN.rods.RegularRod;
@@ -22,7 +20,6 @@ import org.WHITECN.utils.SQLiteUtils;
 import org.WHITECN.utils.tagUtils;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
-import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -30,7 +27,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.server.PluginEnableEvent;
-import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -58,7 +54,7 @@ public final class anendrod extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new DeathListener(this),this);
         getServer().getPluginManager().registerEvents(new HandcuffsAndKey(),this);
         getServer().getPluginManager().registerEvents(new RegularProRod(),this);
-        getServer().getPluginManager().registerEvents(new DiaoLuoDePenJianYaoshui(),this);
+        getServer().getPluginManager().registerEvents(new DroppedSplashPotion(),this);
         Bukkit.getPluginManager().registerEvents(new Listener() {
             @EventHandler
             public void onPluginEnable(PluginEnableEvent event) {

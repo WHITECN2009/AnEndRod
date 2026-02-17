@@ -15,10 +15,9 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-public class DiaoLuoDePenJianYaoshui implements Listener { //掉落的喷溅药水
+public class DroppedSplashPotion implements Listener { //掉落的喷溅药水
     @EventHandler
     public void onSplash(PotionSplashEvent event) {
         ThrownPotion potion = event.getPotion();
