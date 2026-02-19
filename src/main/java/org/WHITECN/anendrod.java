@@ -81,6 +81,9 @@ public final class anendrod extends JavaPlugin {
 
         RegularRod regularRod = new RegularRod();
         getServer().addRecipe(regularRod.getRecipe());
+        
+        PotionRod potionRod = new PotionRod();
+        getServer().addRecipe(potionRod.getRecipe());
 
         //此处注册配方变量
 
@@ -88,8 +91,6 @@ public final class anendrod extends JavaPlugin {
         ShapelessRecipe slimeRod = new ShapelessRecipe(slime, ItemGenerator.createSlimeRod());
         NamespacedKey pro = new NamespacedKey(anendrod.getInstance(),"pro");
         ShapelessRecipe proRod = new ShapelessRecipe(pro, ItemGenerator.createRegularProRod());
-        NamespacedKey potion = new NamespacedKey(anendrod.getInstance(),"potion");
-        ShapelessRecipe potionRod = new ShapelessRecipe(potion, ItemGenerator.createPotionRod());
         NamespacedKey handcuff = new NamespacedKey(anendrod.getInstance(),"handcuff");
         ShapelessRecipe handcuffItem = new ShapelessRecipe(handcuff,ItemGenerator.createHandCuffs());
         NamespacedKey key = new NamespacedKey(anendrod.getInstance(),"key");
@@ -99,8 +100,7 @@ public final class anendrod extends JavaPlugin {
         slimeRod.addIngredient(1,Material.END_ROD);
         slimeRod.addIngredient(1,Material.SLIME_BALL);
         proRod.addIngredient(9,Material.END_ROD);
-        potionRod.addIngredient(1,Material.END_ROD);
-        potionRod.addIngredient(1,Material.GLASS_BOTTLE);
+
         handcuffItem.addIngredient(2,Material.IRON_INGOT);
         handcuffItem.addIngredient(2,Material.CHAIN);
         keyItem.addIngredient(1,Material.IRON_INGOT);
@@ -120,6 +120,7 @@ public final class anendrod extends JavaPlugin {
                 getServer().getScheduler().runTaskLater(instance, () -> {
                     if (event.getPlayer().isOnline()) {
                         event.getPlayer().discoverRecipes(Collections.singletonList(regularRod.getRecipe().getKey()));
+                        event.getPlayer().discoverRecipes(Collections.singletonList(potionRod.getRecipe().getKey()));
                         event.getPlayer().discoverRecipes(Collections.singletonList(slime));
                         event.getPlayer().discoverRecipes(Collections.singletonList(handcuff));
                         event.getPlayer().discoverRecipes(Collections.singletonList(pro));
@@ -133,6 +134,7 @@ public final class anendrod extends JavaPlugin {
         }, this);
         for(Player player : Bukkit.getOnlinePlayers()){
             player.discoverRecipes(Collections.singletonList(regularRod.getRecipe().getKey()));
+            player.discoverRecipes(Collections.singletonList(potionRod.getRecipe().getKey()));
             player.discoverRecipes(Collections.singletonList(slime));
             player.discoverRecipes(Collections.singletonList(pro));
             player.discoverRecipes(Collections.singletonList(handcuff));

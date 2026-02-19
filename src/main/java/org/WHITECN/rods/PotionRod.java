@@ -4,122 +4,97 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.WHITECN.Vars;
 import org.WHITECN.anendrod;
-import org.WHITECN.utils.*;
+import org.WHITECN.utils.PotionUtils;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Particle;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
-public class PotionRod implements Listener {
+import static org.WHITECN.utils.rodsHandler.Insert_sounds;
 
-    @EventHandler
-    public void onPotionRod(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
-        ItemStack mainHand = event.getItem();
+public class PotionRod extends AbstractRod{
+    public PotionRod(){
+        super(
+                Vars.POTION_ROD_NAME,  // displayName
+                "potion_rod",          // namespaceName
+                10,                     // cooldown (ticks)
+                Arrays.asList("§7可以沾药水的末地烛哦")  // baseLore
+        );
+        addPersistentData(new NamespacedKey(anendrod.getInstance(),Vars.NAMESPACE_POTION),PersistentDataType.STRING,"");
+    }
+    @Override
+    public void onUse(Player player, Player target) {
+        target.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 40, 0));
+        target.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 100, 1));
+        target.damage(1.0d);
 
-        if (mainHand != null && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
-            ItemMeta meta = mainHand.getItemMeta();
-            if (meta != null && meta.getDisplayName().equals(Vars.POTION_ROD_NAME)) {
-                event.setCancelled(true);
+        target.playSound(target, Insert_sounds.get(random.nextInt(Insert_sounds.size())), 1.0f, 1.0f);
+        target.spawnParticle(Particle.HEART, target.getLocation(), 30, 1.5d, 1.0d, 1.5d);
+        target.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§d什么东西...?"));
 
-                if (!player.isSneaking() && player.getCooldown(Material.END_ROD) == 0) {
-                    mainHand.setItemMeta(useCounter.addTime(meta));
-                    mainHand.setItemMeta(PotionUtils.setPotion(meta));
-
-                    Boolean hasPotion = PotionUtils.hasPotion(meta);
-
-                    List<String> lore = new ArrayList<>();
-                    lore.add("§7可以沾药水的末地烛哦");
-                    lore.add("§7已使用 §e" + meta.getPersistentDataContainer()
-                            .get(new NamespacedKey(anendrod.getInstance(), Vars.NAMESPACE_COUNT), PersistentDataType.INTEGER) + "§7 次");
-                    lore.add(hasPotion ? "§e上面沾着这些药水：" : "§7上面还没有药水哦，把末地烛扔在地上用喷溅药水砸它试试？");
-                    if (hasPotion) {
-                        String potionData = PotionUtils.getPotion(meta);
-                        if (potionData != null && !potionData.isEmpty()) {
-                            List<PotionEffect> effects = PotionUtils.parseString(potionData);
-                            if (effects != null) {
-                                effects = new ArrayList<>(effects);
-                                List<String> effectStrings = PotionUtils.toStringList(effects);
-                                if (effectStrings != null) {
-                                    lore.addAll(new ArrayList<>(effectStrings));
-                                }
-                            }
-                        }
-                    }
-
-                    meta.setLore(lore);
-                    mainHand.setItemMeta(meta);
-
-                    DeathStatus.add(player.getUniqueId(), player.getUniqueId(), 10, mainHand);
-                    rodsHandler.handlePotionRod(player, player, meta);
-                }
-            }
+        List<PotionEffect> effects = PotionUtils.parseString(player.getEquipment().getItemInMainHand().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(anendrod.getInstance(), Vars.NAMESPACE_POTION), PersistentDataType.STRING)); //还可以更长呢！
+        for (PotionEffect effect : effects) {
+            target.addPotionEffect(effect);
         }
     }
 
-    @EventHandler
-    public void onPotionRod_toEntity(PlayerInteractEntityEvent event) {
-        if (event.getHand() == EquipmentSlot.OFF_HAND) {
-            return;
+    @Override
+    public ItemStack createItemStack() {
+        ItemStack rod = createBaseItemStack();
+        ItemMeta meta = rod.getItemMeta();
+        meta = updateItemLore(meta);
+        rod.setItemMeta(meta);
+        return rod;
+    }
+    @Override
+    public void addRecipeIngredients() {
+        getRecipe().addIngredient(1,Material.END_ROD);
+        getRecipe().addIngredient(1,Material.GLASS_BOTTLE);
+    }
+
+    //----------药水末地烛特有的
+
+    @Override
+    protected ItemMeta updateItemData(ItemMeta meta) {
+        // 减少药水持续时间
+        return PotionUtils.setPotion(meta);
+    }
+
+    @Override
+    protected ItemMeta updateItemLore(ItemMeta meta) {
+        // 先调用父类的方法显示基础信息和使用次数
+        meta = super.updateItemLore(meta);
+        
+        List<String> lore = meta.getLore();
+        if (lore == null) {
+            lore = new java.util.ArrayList<>();
         }
-
-        Player player = event.getPlayer();
-        if (event.getRightClicked() instanceof Player) {
-            Player target = (Player) event.getRightClicked();
-            ItemStack mainHand = Objects.requireNonNull(player.getEquipment()).getItemInMainHand();
-            ItemMeta meta = mainHand.getItemMeta();
-
-            if (meta != null && meta.getDisplayName().equals(Vars.POTION_ROD_NAME)) {
-                event.setCancelled(true);
-
-                if (player.isSneaking() && player.getCooldown(Material.END_ROD) == 0) {
-                    if (target.getEquipment().getLeggings() != null) {
-                        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§c怎么穿着裤子喵!"));
-                        return;
-                    }
-
-                    mainHand.setItemMeta(PotionUtils.setPotion(meta));
-                    mainHand.setItemMeta(useCounter.addTime(meta));
-
-                    Boolean hasPotion = PotionUtils.hasPotion(meta);
-
-                    // === 修复3：同样的修复在这里 ===
-                    List<String> lore = new ArrayList<>();
-                    lore.add("§7可以沾药水的末地烛哦");
-                    lore.add("§7已使用 §e" + meta.getPersistentDataContainer()
-                            .get(new NamespacedKey(anendrod.getInstance(), Vars.NAMESPACE_COUNT), PersistentDataType.INTEGER) + "§7 次");
-                    lore.add(hasPotion ? "§e上面沾着这些药水：" : "§7上面还没有药水哦，把末地烛扔在地上用喷溅药水砸它试试？");
-
-                    if (hasPotion) {
-                        String potionData = PotionUtils.getPotion(meta);
-                        if (potionData != null && !potionData.isEmpty()) {
-                            List<PotionEffect> effects = new ArrayList<>(PotionUtils.parseString(potionData));
-                            List<String> effectStrings = new ArrayList<>(PotionUtils.toStringList(effects));
-                            lore.addAll(effectStrings);
-                        }
-                    }
-
-                    meta.setLore(lore);
-                    mainHand.setItemMeta(meta);
-
-                    DeathStatus.add(player.getUniqueId(), target.getUniqueId(), 10, mainHand);
-                    rodsHandler.handlePotionRod(event.getPlayer(), target, meta);
-                }
+        
+        // 检查是否有药水
+        Boolean hasPotion = PotionUtils.hasPotion(meta);
+        
+        // 添加药水信息行
+        lore.add(hasPotion ? "§e上面沾着这些药水：" : "§7上面还没有药水哦，把末地烛扔在地上用喷溅药水砸它试试？");
+        
+        // 如果有药水，显示具体效果
+        if (hasPotion) {
+            String potionData = PotionUtils.getPotion(meta);
+            if (potionData != null && !potionData.isEmpty()) {
+                java.util.List<org.bukkit.potion.PotionEffect> effects = PotionUtils.parseString(potionData);
+                java.util.List<String> effectStrings = PotionUtils.toStringList(effects);
+                lore.addAll(effectStrings);
             }
         }
+        
+        meta.setLore(lore);
+        return meta;
     }
 }

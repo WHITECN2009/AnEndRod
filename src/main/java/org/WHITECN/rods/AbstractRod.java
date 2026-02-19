@@ -49,11 +49,15 @@ public abstract class AbstractRod implements Listener {
 
         NamespacedKey key = new NamespacedKey(anendrod.getInstance(), namespaceName);
         this.recipe = new ShapelessRecipe(key, createItemStack());
+
+        addRecipeIngredients();
     }
     
     public abstract void onUse(Player player, Player target);
     
     public abstract ItemStack createItemStack();
+
+    public abstract void addRecipeIngredients();
     
     //添加数据
     public <T, Z> void addPersistentData(NamespacedKey key, PersistentDataType<T, Z> type, Z value) {
@@ -130,12 +134,13 @@ public abstract class AbstractRod implements Listener {
     //处理被()
     protected void handleRodUse(Player player, Player target, ItemStack item, ItemMeta meta) {
         meta = useCounter.addTime(meta);
-        meta = updateItemData(meta);
-        meta = updateItemLore(meta);
+        meta = updateItemData(meta); // <--- 如果需要就重写这个！！！
+        meta = updateItemLore(meta); //Me too!
         item.setItemMeta(meta);
 
         //正片开始(bushi
         onUse(player, target);
+        target.setNoDamageTicks(5);
         player.setCooldown(Material.END_ROD, this.cooldown);
 
         //---------存储数据---------
@@ -159,7 +164,6 @@ public abstract class AbstractRod implements Listener {
     protected ItemMeta updateItemData(ItemMeta meta) {
         return meta;
     }
-    
     //子类可以重写此方法来更新Lore
     protected ItemMeta updateItemLore(ItemMeta meta) {
         Integer useCount = meta.getPersistentDataContainer().get(
@@ -191,5 +195,7 @@ public abstract class AbstractRod implements Listener {
         rod.setItemMeta(meta);
         return rod;
     }
+
+
 
 }

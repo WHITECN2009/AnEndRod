@@ -31,7 +31,6 @@ public class RegularRod extends AbstractRod {
             10,                     // cooldown (ticks)
             Arrays.asList("§7没什么特别的 就是末地烛哦")  // baseLore
         );
-        addRecipeIngredients();
     }
     
     @Override
@@ -39,8 +38,6 @@ public class RegularRod extends AbstractRod {
         target.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 40, 0));
         target.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 100, 1));
         target.damage(1.0d);
-        player.setCooldown(Material.END_ROD, 10);
-        target.setNoDamageTicks(5);
         target.playSound(target, Insert_sounds.get(this.random.nextInt(Insert_sounds.size())), 1.0f, 1.0f);
         target.spawnParticle(Particle.HEART, target.getLocation(), 30, 1.5d, 1.0d, 1.5d);
         target.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§d呜嗯...进去了~"));
@@ -54,7 +51,7 @@ public class RegularRod extends AbstractRod {
         rod.setItemMeta(meta);
         return rod;
     }
-
+    @Override
     public void addRecipeIngredients() {
         getRecipe().addIngredient(1, Material.END_ROD);
     }
