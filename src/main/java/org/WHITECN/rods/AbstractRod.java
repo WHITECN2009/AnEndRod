@@ -2,7 +2,11 @@ package org.WHITECN.rods;
 
 import org.WHITECN.Vars;
 import org.WHITECN.anendrod;
+import org.WHITECN.utils.AdvancementHandler;
+import org.WHITECN.utils.SQLiteUtils;
+import org.WHITECN.utils.tagUtils;
 import org.WHITECN.utils.useCounter;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -17,12 +21,9 @@ import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public abstract class AbstractRod implements Listener {
     protected String displayName;
@@ -32,6 +33,8 @@ public abstract class AbstractRod implements Listener {
     protected ShapelessRecipe recipe;
     protected Map<NamespacedKey, Object> persistentData;
     protected Map<NamespacedKey, PersistentDataType<?, ?>> persistentDataTypes;
+    protected Random random = new Random();
+
     
     public AbstractRod(String displayName, String namespaceName, Integer cooldown, List<String> baseLore) {
         this.displayName = displayName;
@@ -58,15 +61,14 @@ public abstract class AbstractRod implements Listener {
         this.persistentDataTypes.put(key, type);
     }
     
-    //把数据写入Itemmeta
-    protected void applyPersistentData(ItemMeta meta) {
+
+    protected void applyPersistentData(ItemMeta meta) {//把数据写入Itemmeta
         PersistentDataContainer container = meta.getPersistentDataContainer();
         for (Map.Entry<NamespacedKey, Object> entry : persistentData.entrySet()) {
             NamespacedKey key = entry.getKey();
             PersistentDataType<?, ?> type = persistentDataTypes.get(key);
             Object value = entry.getValue();
-            
-            // 根据类型设置数据
+
             if (type == PersistentDataType.INTEGER) {
                 container.set(key, PersistentDataType.INTEGER, (Integer) value);
             } else if (type == PersistentDataType.STRING) {
@@ -74,22 +76,7 @@ public abstract class AbstractRod implements Listener {
             }
         }
     }
-    
-    // 从ItemMeta读取持久化数据
-    protected void loadPersistentData(ItemMeta meta) {
-        PersistentDataContainer container = meta.getPersistentDataContainer();
-        for (Map.Entry<NamespacedKey, PersistentDataType<?, ?>> entry : persistentDataTypes.entrySet()) {
-            NamespacedKey key = entry.getKey();
-            PersistentDataType<?, ?> type = entry.getValue();
-            
-            if (type == PersistentDataType.INTEGER && container.has(key, PersistentDataType.INTEGER)) {
-                persistentData.put(key, container.get(key, PersistentDataType.INTEGER));
-            } else if (type == PersistentDataType.STRING && container.has(key, PersistentDataType.STRING)) {
-                persistentData.put(key, container.get(key, PersistentDataType.STRING));
-            }
-        }
-    }
-    
+
     public ShapelessRecipe getRecipe() {
         return recipe;
     }
@@ -106,7 +93,7 @@ public abstract class AbstractRod implements Listener {
                 
                 if (!player.isSneaking() && player.getCooldown(Material.END_ROD) == 0) {
                     if (player.getEquipment().getLeggings() != null) {
-                        player.sendMessage("§c他还穿着裤子！");
+                        player.sendTitle("","§c他还穿着裤子！");
                         return;
                     }
                     handleRodUse(player, player, mainHand, meta);
@@ -132,7 +119,7 @@ public abstract class AbstractRod implements Listener {
                 
                 if (player.isSneaking() && player.getCooldown(Material.END_ROD) == 0) {
                     if (target.getEquipment().getLeggings() != null) {
-                        player.sendMessage("§c他还穿着裤子！");
+                        player.sendTitle("","§c他还穿着裤子！");
                         return;
                     }
                     handleRodUse(player, target, mainHand, meta);
@@ -142,23 +129,30 @@ public abstract class AbstractRod implements Listener {
     }
     //处理被()
     protected void handleRodUse(Player player, Player target, ItemStack item, ItemMeta meta) {
-        //加载现有的持久化数据
-        loadPersistentData(meta);
-        //更新使用次数
         meta = useCounter.addTime(meta);
-        
-        //调用子类的自定义数据更新方法
         meta = updateItemData(meta);
-        
-        //重新应用持久化数据
-        applyPersistentData(meta);
-        //更新Lore
         meta = updateItemLore(meta);
         item.setItemMeta(meta);
 
-        //这下看懂了
+        //正片开始(bushi
         onUse(player, target);
         player.setCooldown(Material.END_ROD, this.cooldown);
+
+        //---------存储数据---------
+
+        // 性能优化：使用 PDC 存储统计数据，减少数据库频繁 IO
+        tagUtils.ensureTag(target, "rodUsed", "0");
+        int rodUsed = Integer.parseInt(tagUtils.getTag(target, "rodUsed")) + 1;
+        tagUtils.setTag(target, "rodUsed", String.valueOf(rodUsed));
+        AdvancementHandler.advancementTest(target);
+
+        // 异步更新数据库统计，避免阻塞主线程
+        String playerName = player.getName();
+        String targetName = target.getName();
+        Bukkit.getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(anendrod.class), () -> {
+            SQLiteUtils.setCTCount(playerName, SQLiteUtils.getCTCount(playerName) + 1);
+            SQLiteUtils.setChaCount(targetName, SQLiteUtils.getChaCount(targetName) + 1);
+        });
     }
     
     //如果需要更新其他的数据要重写这个
@@ -168,7 +162,14 @@ public abstract class AbstractRod implements Listener {
     
     //子类可以重写此方法来更新Lore
     protected ItemMeta updateItemLore(ItemMeta meta) {
-        int useCount = (Integer) persistentData.get(new NamespacedKey(anendrod.getInstance(), Vars.NAMESPACE_COUNT));
+        Integer useCount = meta.getPersistentDataContainer().get(
+            new NamespacedKey(anendrod.getInstance(), Vars.NAMESPACE_COUNT),
+            PersistentDataType.INTEGER
+        );
+        
+        if (useCount == null) {
+            useCount = 0;
+        }
         
         List<String> lore = new ArrayList<>(this.baseLore);
         lore.add("§7已使用 §e" + useCount + "§7 次");
@@ -176,14 +177,13 @@ public abstract class AbstractRod implements Listener {
         
         return meta;
     }
-    protected ItemStack createBaseItemStack() {
+    public ItemStack createBaseItemStack() {
         ItemStack rod = new ItemStack(Material.END_ROD);
         ItemMeta meta = rod.getItemMeta();
         
         meta.setDisplayName(this.displayName);
         
         List<String> lore = new ArrayList<>(this.baseLore);
-        lore.add("§7已使用 §e0§7 次");
         meta.setLore(lore);
 
         applyPersistentData(meta);
@@ -191,4 +191,5 @@ public abstract class AbstractRod implements Listener {
         rod.setItemMeta(meta);
         return rod;
     }
+
 }

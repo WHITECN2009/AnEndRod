@@ -25,13 +25,12 @@ import java.util.Random;
 
 public class rodsHandler {
     private static Random random = new Random();
-    private static List<Sound> Insert_sounds = Arrays.asList(
+    public static List<Sound> Insert_sounds = Arrays.asList(
             Sound.ITEM_HONEYCOMB_WAX_ON,
             Sound.BLOCK_HONEY_BLOCK_HIT,
             Sound.BLOCK_HONEY_BLOCK_SLIDE,
             Sound.BLOCK_HONEY_BLOCK_STEP
     );
-
     public static void handleRegularRod(Player player, Player target) {
         target.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 40, 0));
         target.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 100, 1));

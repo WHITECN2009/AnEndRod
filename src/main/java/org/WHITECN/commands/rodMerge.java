@@ -2,6 +2,7 @@ package org.WHITECN.commands;
 
 import org.WHITECN.Vars;
 import org.WHITECN.anendrod;
+import org.WHITECN.rods.RegularRod;
 import org.WHITECN.utils.ConfigManager;
 import org.WHITECN.utils.ItemGenerator;
 import org.WHITECN.utils.tagUtils;
@@ -12,6 +13,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -104,7 +106,7 @@ public class rodMerge implements CommandExecutor, Listener ,TabCompleter{
             Inventory mergeUI = Bukkit.createInventory(player, 18, "§9§l兑换小玩具");
 
             //TODO:此处注册新的物品
-            ItemStack regularRod = createMenuItem(Material.END_ROD, Vars.REGULAR_ROD_NAME, "§7没什么特别的 就是末地烛哦");
+            ItemStack regularRod = new RegularRod().createBaseItemStack();
             ItemStack slimeRod = createMenuItem(Material.END_ROD, Vars.SLIME_ROD_NAME, "§7一个黏糊糊的末地烛哦");
             ItemStack proRod = createMenuItem(Material.END_ROD, Vars.PRO_ROD_NAME, "§7普通末地烛的§bPro§7版");
             ItemStack potionRod = createMenuItem(Material.END_ROD, Vars.POTION_ROD_NAME, "§7可以沾药水的末地烛哦");
@@ -171,9 +173,10 @@ public class rodMerge implements CommandExecutor, Listener ,TabCompleter{
             // 根据点击的物品执行不同操作
             switch (itemName) {
                 case Vars.REGULAR_ROD_NAME:
-                    ItemStack regularRod = ItemGenerator.createRegularRod();
+                    RegularRod regularRod = new RegularRod();
+                    ItemStack is = regularRod.createItemStack();
                     if (regularCheck(inv)) {
-                        inv.addItem(regularRod);
+                        inv.addItem(is);
                         player.sendMessage(prefix + "§2兑换成功喵~");
                         break;
                     }
