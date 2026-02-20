@@ -1,5 +1,7 @@
 package org.WHITECN.rods;
 
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.WHITECN.Vars;
 import org.WHITECN.anendrod;
 import org.WHITECN.utils.AdvancementHandler;
@@ -41,7 +43,6 @@ public abstract class AbstractRod implements Listener {
             Sound.BLOCK_HONEY_BLOCK_SLIDE,
             Sound.BLOCK_HONEY_BLOCK_STEP
     );
-    
     public AbstractRod(String displayName, String namespaceName, Integer cooldown, List<String> baseLore) {
         this.displayName = displayName;
         this.namespaceName = namespaceName;
@@ -103,7 +104,11 @@ public abstract class AbstractRod implements Listener {
                 
                 if (!player.isSneaking() && player.getCooldown(Material.END_ROD) == 0) {
                     if (player.getEquipment().getLeggings() != null) {
-                        player.sendTitle("","§c他还穿着裤子！");
+                        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§c怎么穿着裤子喵!"));
+                        return;
+                    }
+                    if (mainHand.getAmount() > 1){
+                        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§d一次性这么多的话...会坏掉吧喵.."));
                         return;
                     }
                     handleRodUse(player, player, mainHand, meta);
@@ -129,7 +134,11 @@ public abstract class AbstractRod implements Listener {
                 
                 if (player.isSneaking() && player.getCooldown(Material.END_ROD) == 0) {
                     if (target.getEquipment().getLeggings() != null) {
-                        player.sendTitle("","§c他还穿着裤子！");
+                        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§c怎么穿着裤子喵!"));
+                        return;
+                    }
+                    if (mainHand.getAmount() > 1){
+                        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§d一次性这么多的话...会坏掉吧喵.."));
                         return;
                     }
                     handleRodUse(player, target, mainHand, meta);
@@ -203,7 +212,4 @@ public abstract class AbstractRod implements Listener {
         rod.setItemMeta(meta);
         return rod;
     }
-
-
-
 }
