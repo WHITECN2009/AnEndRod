@@ -3,72 +3,47 @@ package org.WHITECN.rods;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.WHITECN.Vars;
-import org.WHITECN.anendrod;
-import org.WHITECN.utils.SQLiteUtils;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import org.bukkit.Particle;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.WHITECN.utils.DeathStatus;
-import org.WHITECN.utils.rodsHandler;
-import org.WHITECN.utils.useCounter;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.Arrays;
 
-public class RegularRod implements Listener {
-    @EventHandler
-    public void onRegularRod(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
-        ItemStack mainHand = event.getItem();
-        if (mainHand != null && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
-            ItemMeta meta = mainHand.getItemMeta();
-            if (meta != null && meta.getDisplayName().equals(Vars.REGULAR_ROD_NAME)) {
-                event.setCancelled(true);
-                if (!player.isSneaking() && player.getCooldown(Material.END_ROD) == 0){
-                    mainHand.setItemMeta(useCounter.addTime(meta));
-                    meta.setLore(List.of("§7没什么特别的 就是末地烛哦\n","§7已使用 §e" + meta.getPersistentDataContainer().get(new NamespacedKey(anendrod.getInstance(), Vars.NAMESPACE_COUNT), PersistentDataType.INTEGER) + "§7 次"));
-                    mainHand.setItemMeta(meta);
-                    DeathStatus.add(player.getUniqueId(), player.getUniqueId(), 10, mainHand);
-                    rodsHandler.handleRegularRod(player,player);
-                }
-            }
-        }
+
+public class RegularRod extends AbstractRod {
+
+    public RegularRod() {
+        super(
+            Vars.REGULAR_ROD_NAME,  // displayName
+            "regular_rod",          // namespaceName
+            10,                     // cooldown (ticks)
+            Arrays.asList("§7没什么特别的 就是末地烛哦")  // baseLore
+        );
     }
-    @EventHandler
-    public void onRegularRod_toEntity(PlayerInteractEntityEvent event) {
-        if (event.getHand() == EquipmentSlot.OFF_HAND) {
-            return;
-        }
-        Player player = event.getPlayer();
-        if (event.getRightClicked() instanceof Player) {
-            Player target = (Player) event.getRightClicked();
-            ItemStack mainHand = Objects.requireNonNull(player.getEquipment()).getItemInMainHand();
-            ItemMeta meta = mainHand.getItemMeta();
-            if (meta != null && meta.getDisplayName().equals(Vars.REGULAR_ROD_NAME)) {
-                // 拦截末地烛对玩家的交互
-                event.setCancelled(true);
-                
-                if (player.isSneaking() && player.getCooldown(Material.END_ROD) == 0) {
-                    if (target.getEquipment().getLeggings() != null){
-                        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§c怎么穿着裤子喵!"));
-                        return;
-                    }
-                    mainHand.setItemMeta(useCounter.addTime(meta));
-                    meta.setLore(List.of("§7没什么特别的 就是末地烛哦\n","§7已使用 §e" + meta.getPersistentDataContainer().get(new NamespacedKey(anendrod.getInstance(), Vars.NAMESPACE_COUNT), PersistentDataType.INTEGER) + "§7 次"));
-                    mainHand.setItemMeta(meta);
-                    DeathStatus.add(player.getUniqueId(), target.getUniqueId(), 10, mainHand);
-                    rodsHandler.handleRegularRod(event.getPlayer(),target);
-                }
-            }
-        }
+    
+    @Override
+    public void onUse(Player player, Player target) {
+        target.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 40, 0));
+        target.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 100, 1));
+        target.damage(1.0d);
+        target.spawnParticle(Particle.HEART, target.getLocation(), 30, 1.5d, 1.0d, 1.5d);
+        target.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§d呜嗯...进去了~"));
+    }
+
+    @Override
+    public ItemStack createItemStack() {
+        ItemStack rod = createBaseItemStack();
+        ItemMeta meta = rod.getItemMeta();
+        meta = updateItemLore(meta);
+        rod.setItemMeta(meta);
+        return rod;
+    }
+    @Override
+    public void addRecipeIngredients() {
+        getRecipe().addIngredient(1, Material.END_ROD);
     }
 }
