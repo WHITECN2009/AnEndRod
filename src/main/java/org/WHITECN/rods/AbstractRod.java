@@ -158,6 +158,7 @@ public abstract class AbstractRod implements Listener {
             SQLiteUtils.setCTCount(playerName, SQLiteUtils.getCTCount(playerName) + 1);
             SQLiteUtils.setChaCount(targetName, SQLiteUtils.getChaCount(targetName) + 1);
         });
+        AdvancementHandler.advancementTest(target); //成就
     }
     
     //如果需要更新其他的数据要重写这个

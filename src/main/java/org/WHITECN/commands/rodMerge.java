@@ -2,11 +2,15 @@ package org.WHITECN.commands;
 
 import org.WHITECN.Vars;
 import org.WHITECN.anendrod;
+import org.WHITECN.rods.PotionRod;
+import org.WHITECN.rods.RegularProRod;
 import org.WHITECN.rods.RegularRod;
+import org.WHITECN.rods.SlimeRod;
 import org.WHITECN.utils.ConfigManager;
 import org.WHITECN.utils.ItemGenerator;
 import org.WHITECN.utils.tagUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
@@ -20,6 +24,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -173,9 +179,10 @@ public class rodMerge implements CommandExecutor, Listener ,TabCompleter{
             // 根据点击的物品执行不同操作
             switch (itemName) {
                 case Vars.REGULAR_ROD_NAME:
-                    RegularRod regularRod = new RegularRod();
-                    ItemStack is = regularRod.createItemStack();
-                    if (regularCheck(inv)) {
+                    RegularRod regularRodObj = new RegularRod();
+                    ItemStack is = regularRodObj.createItemStack();
+                    if (checkInv(regularRodObj.getRecipe(),inv) || player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR) {
+                        removeFromInv(regularRodObj.getRecipe(),inv);
                         inv.addItem(is);
                         player.sendMessage(prefix + "§2兑换成功喵~");
                         break;
@@ -183,8 +190,10 @@ public class rodMerge implements CommandExecutor, Listener ,TabCompleter{
                     player.sendMessage(prefix + "§c材料不足以兑换 普通末地烛 喵, 需要:末地烛x1");
                     break;
                 case Vars.SLIME_ROD_NAME:
-                    ItemStack slimeRod = ItemGenerator.createSlimeRod();
-                    if (slimeCheck(inv)) {
+                    SlimeRod slimeRodObj = new SlimeRod();
+                    ItemStack slimeRod = slimeRodObj.createItemStack();
+                    if (checkInv(slimeRodObj.getRecipe(),inv) || player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR) {
+                        removeFromInv(slimeRodObj.getRecipe(),inv);
                         inv.addItem(slimeRod);
                         player.sendMessage(prefix + "§2兑换成功喵~");
                         break;
@@ -192,8 +201,10 @@ public class rodMerge implements CommandExecutor, Listener ,TabCompleter{
                     player.sendMessage(prefix + "§c材料不足以兑换 粘液末地烛 喵, 需要:末地烛x1 粘液球x1");
                     break;
                 case Vars.PRO_ROD_NAME:
-                    ItemStack proRod = ItemGenerator.createRegularProRod();
-                    if (proCheck(inv)) {
+                    RegularProRod proRodObj = new RegularProRod();
+                    ItemStack proRod = proRodObj.createItemStack();
+                    if (checkInv(proRodObj.getRecipe(),inv) || player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR) {
+                        removeFromInv(proRodObj.getRecipe(),inv);
                         inv.addItem(proRod);
                         player.sendMessage(prefix + "§2兑换成功喵~");
                         break;
@@ -201,8 +212,10 @@ public class rodMerge implements CommandExecutor, Listener ,TabCompleter{
                     player.sendMessage(prefix + "§c材料不足以兑换 Pro末地烛 喵, 需要:末地烛x9");
                     break;
                 case Vars.POTION_ROD_NAME:
-                    ItemStack potionRod = ItemGenerator.createPotionRod();
-                    if (potionCheck(inv)) {
+                    PotionRod potionRodObj = new PotionRod();
+                    ItemStack potionRod = potionRodObj.createItemStack();
+                    if (checkInv(potionRodObj.getRecipe(),inv) || player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR) {
+                        removeFromInv(potionRodObj.getRecipe(),inv);
                         inv.addItem(potionRod);
                         player.sendMessage(prefix + "§2兑换成功喵~");
                         break;
@@ -211,7 +224,7 @@ public class rodMerge implements CommandExecutor, Listener ,TabCompleter{
                     break;
                 case "§d手铐♥":
                     ItemStack handCuff = ItemGenerator.createHandCuffs();
-                    if (handcuffCheck(inv)) {
+                    if (handcuffCheck(inv) || player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR) {
                         inv.addItem(handCuff);
                         player.sendMessage(prefix + "§2兑换成功喵~");
                         break;
@@ -220,7 +233,7 @@ public class rodMerge implements CommandExecutor, Listener ,TabCompleter{
                     break;
                 case "§7钥匙":
                     ItemStack key = ItemGenerator.createKeyItem();
-                    if (keyCheck(inv)) {
+                    if (keyCheck(inv) || player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR) {
                         inv.addItem(key);
                         player.sendMessage(prefix + "§2兑换成功喵~");
                         break;
@@ -229,6 +242,76 @@ public class rodMerge implements CommandExecutor, Listener ,TabCompleter{
                     break;
             }
         }
+    }
+    private boolean checkInv(ShapelessRecipe recipe, Inventory inv) {
+        Map<ItemStack, Integer> required = new HashMap<>();
+        for (ItemStack ingredient : recipe.getIngredientList()) {
+            ItemStack key = ingredient.clone();
+            key.setAmount(1); //防止比较不了的情况
+            required.put(key, required.getOrDefault(key, 0) + ingredient.getAmount());
+        }
+        for (ItemStack invItem : inv.getContents()) {
+            if (invItem == null || invItem.getType() == Material.AIR) continue;
+
+            ItemStack matchingKey = null;
+            for (ItemStack requiredItem : required.keySet()) {
+                if (requiredItem.isSimilar(invItem)) {
+                    matchingKey = requiredItem;
+                    break;
+                }
+            }
+
+            if (matchingKey != null) {
+                int needed = required.get(matchingKey);
+                int available = invItem.getAmount();
+
+                if (available >= needed) {
+                    required.remove(matchingKey);
+                } else {
+                    required.put(matchingKey, needed - available);
+                }
+            }
+            if (required.isEmpty()) break; //剪枝（
+        }
+        return required.isEmpty();
+    }
+    private boolean removeFromInv(ShapelessRecipe recipe, Inventory inv) {
+        Map<ItemStack, Integer> required = new HashMap<>();
+        for (ItemStack ingredient : recipe.getIngredientList()) {
+            ItemStack key = ingredient.clone();
+            key.setAmount(1); //防止比较不了的情况
+            required.put(key, required.getOrDefault(key, 0) + ingredient.getAmount());
+        }
+        for (int i = 0; i < inv.getSize(); i++) {
+            ItemStack invItem = inv.getItem(i);
+            if (invItem == null || invItem.getType() == Material.AIR) continue;
+            ItemStack matchingKey = null;
+            for (ItemStack requiredItem : required.keySet()) {
+                if (requiredItem.isSimilar(invItem)) {
+                    matchingKey = requiredItem;
+                    break;
+                }
+            }
+
+            if (matchingKey != null) {
+                int needed = required.get(matchingKey);
+                int available = invItem.getAmount();
+
+                if (available > needed) {
+                    invItem.setAmount(available - needed);
+                    required.remove(matchingKey);
+                } else if (available == needed) {
+                    inv.setItem(i, null);
+                    required.remove(matchingKey);
+                } else {
+                    inv.setItem(i, null);
+                    required.put(matchingKey, needed - available);
+                }
+            }
+            if (required.isEmpty()) break; //剪枝（
+        }
+
+        return required.isEmpty();
     }
 
     private static ItemStack createMenuItem(Material material, String name, String... lore) {
@@ -244,74 +327,6 @@ public class rodMerge implements CommandExecutor, Listener ,TabCompleter{
 
         item.setItemMeta(meta);
         return item;
-    }
-
-    private Boolean regularCheck(Inventory inv){
-        for (ItemStack item : inv.getContents()){
-            if (item != null && item.getType().equals(Material.END_ROD) && !Objects.requireNonNull(item.getItemMeta()).hasLore()){
-                item.setAmount(item.getAmount() - 1);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private Boolean proCheck(Inventory inv){
-        for (ItemStack item : inv.getContents()){
-            if (item != null && item.getType().equals(Material.END_ROD) && !Objects.requireNonNull(item.getItemMeta()).hasLore() && item.getAmount() >= 9){
-                item.setAmount(item.getAmount() - 9);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private Boolean slimeCheck(Inventory inv){
-        boolean hasEndRod = false;
-        boolean hasSlimeBall = false;
-        int endRodSlot = -1;
-        int slimeBallSlot = -1;
-
-        // 先检测是否同时拥有两个物品
-        for (int i = 0; i < inv.getSize(); i++) {
-            ItemStack item = inv.getItem(i);
-            if (item != null) {
-                // 检测末地烛（没有lore的普通末地烛）
-                if (!hasEndRod && item.getType().equals(Material.END_ROD) &&
-                        !Objects.requireNonNull(item.getItemMeta()).hasLore()) {
-                    hasEndRod = true;
-                    endRodSlot = i;
-                }
-                // 检测粘液球
-                if (!hasSlimeBall && item.getType().equals(Material.SLIME_BALL)) {
-                    hasSlimeBall = true;
-                    slimeBallSlot = i;
-                }
-            }
-        }
-
-        // 如果两个物品都有，则删除它们
-        if (hasEndRod && hasSlimeBall) {
-            // 删除末地烛
-            ItemStack endRod = inv.getItem(endRodSlot);
-            if (endRod.getAmount() > 1) {
-                endRod.setAmount(endRod.getAmount() - 1);
-            } else {
-                inv.setItem(endRodSlot, null);
-            }
-
-            // 删除粘液球
-            ItemStack slimeBall = inv.getItem(slimeBallSlot);
-            if (slimeBall.getAmount() > 1) {
-                slimeBall.setAmount(slimeBall.getAmount() - 1);
-            } else {
-                inv.setItem(slimeBallSlot, null);
-            }
-
-            return true;
-        }
-
-        return false;
     }
 
     /**

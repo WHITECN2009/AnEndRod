@@ -205,34 +205,4 @@ public class rodsHandler {
         tagUtils.setTag(player, "rodUsed", String.valueOf(Integer.parseInt(tagUtils.getTag(player, "rodUsed")) + 1));
         AdvancementHandler.advancementTest(player);
     }
-
-    public static void handlePotionRod(Player player, Player target, ItemMeta meta) {
-        target.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 40, 0));
-        target.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 100, 1));
-        target.damage(1.0d);
-        player.setCooldown(Material.END_ROD, 10);
-        target.setNoDamageTicks(5);
-        target.playSound(target, Insert_sounds.get(random.nextInt(Insert_sounds.size())), 1.0f, 1.0f);
-        target.spawnParticle(Particle.HEART, target.getLocation(), 30, 1.5d, 1.0d, 1.5d);
-        target.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§d什么东西...?"));
-
-        List<PotionEffect> effects = PotionUtils.parseString( meta.getPersistentDataContainer().get(new NamespacedKey(anendrod.getInstance(), Vars.NAMESPACE_POTION), PersistentDataType.STRING)); //还可以更长呢！
-        for (PotionEffect effect : effects) {
-            target.addPotionEffect(effect);
-        }
-
-        // 性能优化：使用 PDC 存储统计数据，减少数据库频繁 IO
-        tagUtils.ensureTag(target, "rodUsed", "0");
-        int rodUsed = Integer.parseInt(tagUtils.getTag(target, "rodUsed")) + 1;
-        tagUtils.setTag(target, "rodUsed", String.valueOf(rodUsed));
-        AdvancementHandler.advancementTest(target);
-
-        // 异步更新数据库统计，避免阻塞主线程
-        String playerName = player.getName();
-        String targetName = target.getName();
-        Bukkit.getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(anendrod.class), () -> {
-            SQLiteUtils.setCTCount(playerName, SQLiteUtils.getCTCount(playerName) + 1);
-            SQLiteUtils.setChaCount(targetName, SQLiteUtils.getChaCount(targetName) + 1);
-        });
-    }
 }
