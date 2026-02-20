@@ -78,6 +78,7 @@ public final class anendrod extends JavaPlugin {
         removeRecipeIfExists("handcuff");
         removeRecipeIfExists("key");
 
+        //此处注册配方变量
         RegularRod regularRod = new RegularRod();
         getServer().addRecipe(regularRod.getRecipe());
         
@@ -89,8 +90,6 @@ public final class anendrod extends JavaPlugin {
         
         SlimeRod slimeRod = new SlimeRod();
         getServer().addRecipe(slimeRod.getRecipe());
-
-        //此处注册配方变量
 
         NamespacedKey handcuff = new NamespacedKey(anendrod.getInstance(),"handcuff");
         ShapelessRecipe handcuffItem = new ShapelessRecipe(handcuff,ItemGenerator.createHandCuffs());
