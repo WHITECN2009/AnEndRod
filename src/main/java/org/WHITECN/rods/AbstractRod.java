@@ -9,6 +9,7 @@ import org.WHITECN.utils.useCounter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -34,7 +35,12 @@ public abstract class AbstractRod implements Listener {
     protected Map<NamespacedKey, Object> persistentData;
     protected Map<NamespacedKey, PersistentDataType<?, ?>> persistentDataTypes;
     protected Random random = new Random();
-
+    protected List<Sound> Insert_sounds = Arrays.asList(
+            Sound.ITEM_HONEYCOMB_WAX_ON,
+            Sound.BLOCK_HONEY_BLOCK_HIT,
+            Sound.BLOCK_HONEY_BLOCK_SLIDE,
+            Sound.BLOCK_HONEY_BLOCK_STEP
+    );
     
     public AbstractRod(String displayName, String namespaceName, Integer cooldown, List<String> baseLore) {
         this.displayName = displayName;
@@ -139,6 +145,7 @@ public abstract class AbstractRod implements Listener {
         item.setItemMeta(meta);
 
         //正片开始(bushi
+        target.playSound(player, Insert_sounds.get(random.nextInt(Insert_sounds.size())), 1.0f, 1.0f);
         onUse(player, target);
         target.setNoDamageTicks(5);
         player.setCooldown(Material.END_ROD, this.cooldown);

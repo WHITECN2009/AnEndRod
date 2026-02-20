@@ -24,7 +24,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.Arrays;
 import java.util.Objects;
 
-import static org.WHITECN.utils.rodsHandler.Insert_sounds;
 
 public class RegularProRod extends AbstractRod{
     public RegularProRod() {
@@ -42,8 +41,6 @@ public class RegularProRod extends AbstractRod{
         player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 50 * 20, 3));
         player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 80 * 20, 3));
         player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 80 * 20, 2));
-
-        SQLiteUtils.setChaCount(player.getName(), SQLiteUtils.getChaCount(player.getName()) + 1);
         //持续80喵
         new BukkitRunnable() {
             private int t = 0; // 当前 tick喵

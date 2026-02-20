@@ -12,22 +12,18 @@ import org.WHITECN.utils.tagUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
@@ -288,7 +284,7 @@ public class rodMerge implements CommandExecutor, Listener ,TabCompleter{
         }
         return required.isEmpty();
     }
-    private boolean removeFromInv(ShapelessRecipe recipe, Inventory inv) {
+    private void removeFromInv(ShapelessRecipe recipe, Inventory inv) {
         Map<ItemStack, Integer> required = new HashMap<>();
         for (ItemStack ingredient : recipe.getIngredientList()) {
             ItemStack key = ingredient.clone();
@@ -324,7 +320,6 @@ public class rodMerge implements CommandExecutor, Listener ,TabCompleter{
             if (required.isEmpty()) break; //剪枝（
         }
 
-        return required.isEmpty();
     }
 
     private static ItemStack createMenuItem(Material material, String name, String... lore) {

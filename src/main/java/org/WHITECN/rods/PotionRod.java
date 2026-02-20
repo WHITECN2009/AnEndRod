@@ -18,7 +18,6 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.WHITECN.utils.rodsHandler.Insert_sounds;
 
 public class PotionRod extends AbstractRod{
     public PotionRod(){
@@ -36,7 +35,6 @@ public class PotionRod extends AbstractRod{
         target.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 100, 1));
         target.damage(1.0d);
 
-        target.playSound(target, Insert_sounds.get(random.nextInt(Insert_sounds.size())), 1.0f, 1.0f);
         target.spawnParticle(Particle.HEART, target.getLocation(), 30, 1.5d, 1.0d, 1.5d);
         target.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§d什么东西...?"));
 
