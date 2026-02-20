@@ -30,7 +30,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public final class anendrod extends JavaPlugin {
     private static anendrod instance;
     private static Logger logger;
-    public static final String prefix = "§d[EndRod]§r ";
+    public static final String prefix = "§7[§eEnd§dRod§7]§r ";
     private Placeholders placeholders;
 
     @Override

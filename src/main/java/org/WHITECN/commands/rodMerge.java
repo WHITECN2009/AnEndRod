@@ -62,14 +62,21 @@ public class rodMerge implements CommandExecutor, Listener ,TabCompleter{
 
         Player player = (Player) sender;
 
-        if (args.length == 3) {
-            switch (args[1].toLowerCase()) {
+        if (args.length >= 1) {
+            switch (args[0].toLowerCase()) {
                 case "setrodused":
                     if (!sender.isOp()) {
                         sender.sendMessage(prefix + "§c你没有权限使用 setrodused 喵~");
                         return true;
                     }
                     try{
+                        if (args.length != 3){
+                            sender.sendMessage(prefix + "杂鱼...");
+                            sender.sendMessage(prefix + "长这么大了还不知道格式是什么嘛...");
+                            sender.sendMessage(prefix + "是/rodmerge setrodused <player> <count>");
+                            sender.sendMessage(prefix + "笨蛋..");
+                            return true;
+                        }
                         Player target = Bukkit.getPlayer(args[1]);
                         int usedCount = Integer.parseInt(args[2]);
                         if (target == null){
@@ -89,6 +96,10 @@ public class rodMerge implements CommandExecutor, Listener ,TabCompleter{
                         sender.sendMessage(prefix + "§c你没有权限使用 setrodused 喵~");
                         return true;
                     }
+                    if (args.length != 2){
+                        sender.sendMessage(prefix + "笨蛋笨蛋！你要查询谁啊！");
+                        return true;
+                    }
                     Player target = Bukkit.getPlayer(args[1]);
                     if (target == null) {
                         player.sendMessage(prefix + "§c未查找到该玩家喵");
@@ -96,6 +107,7 @@ public class rodMerge implements CommandExecutor, Listener ,TabCompleter{
                     }
                     tagUtils.ensureTag(target, "rodUsed", "0");
                     sender.sendMessage(prefix + "§b该玩家的末地烛使用次数: §a" + tagUtils.getTag(target, "rodUsed"));
+                    return true;
 
                 case "togglecuff":
                     tagUtils.ensureTag(player, "canCuff", "false");
@@ -106,6 +118,7 @@ public class rodMerge implements CommandExecutor, Listener ,TabCompleter{
                         tagUtils.setTag(player, "canCuff", "false");
                         player.sendMessage(prefix + "§c已关闭手铐玩法喵！");
                     }
+                    return true;
             }
         }
         if (args.length == 0 || args[0].equalsIgnoreCase("gui")) {
