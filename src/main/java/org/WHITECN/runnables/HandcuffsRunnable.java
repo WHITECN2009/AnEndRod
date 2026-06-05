@@ -11,7 +11,7 @@ public class HandcuffsRunnable extends BukkitRunnable{
     @Override
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
-            if (p.getEquipment().getChestplate() != null) {
+            if (p.getEquipment().getChestplate().getItemMeta() != null) {
                 if (p.getEquipment().getChestplate().getItemMeta().getDisplayName().equals(HandcuffsAndKey.handCuffsName)) {
                     p.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS,20, 9, false, false));
                     p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 20, 9, false, false));
