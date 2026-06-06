@@ -109,13 +109,13 @@ public class HandcuffsAndKey implements Listener{
         Player target = (Player) event.getRightClicked();
         tagUtils.ensureTag(target,"canCuff","false");
         ItemStack mainHand = user.getInventory().getItemInMainHand();
+        ItemMeta meta = mainHand.getItemMeta();
         if (!mainHand.hasItemMeta()) return;
+        if (!handCuffsName.equals(meta.getDisplayName())) return;
         if (tagUtils.getTag(target,"canCuff").equals("false")){
             user.sendMessage(prefix + "§c该玩家已禁用手铐玩法！");
             return;
         }
-        ItemMeta meta = mainHand.getItemMeta();
-        if (!handCuffsName.equals(meta.getDisplayName())) return;
 
         // 检查目标是否已经佩戴了手铐
         ItemStack currentChestplate = target.getEquipment().getChestplate();
