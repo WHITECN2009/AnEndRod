@@ -8,6 +8,7 @@ import org.WHITECN.commands.rodMerge;
 import org.WHITECN.items.HandcuffsAndKey;
 import org.WHITECN.listeners.DeathListener;
 import org.WHITECN.listeners.DroppedSplashPotion;
+import org.WHITECN.listeners.SlimesListener;
 import org.WHITECN.rods.*;
 import org.WHITECN.runnables.DeathRunnable;
 import org.WHITECN.runnables.HandcuffsRunnable;
@@ -51,6 +52,7 @@ public final class anendrod extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new DeathListener(this),this);
         getServer().getPluginManager().registerEvents(new HandcuffsAndKey(),this);
         getServer().getPluginManager().registerEvents(new DroppedSplashPotion(),this);
+        getServer().getPluginManager().registerEvents(new SlimesListener(),this);
         Bukkit.getPluginManager().registerEvents(new Listener() {
             @EventHandler
             public void onPluginEnable(PluginEnableEvent event) {

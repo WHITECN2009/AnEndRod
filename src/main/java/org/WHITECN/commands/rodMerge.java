@@ -81,7 +81,7 @@ public class rodMerge implements CommandExecutor, Listener ,TabCompleter{
                         }
                         tagUtils.ensureTag(target,"rodUsed","0");
                         tagUtils.setTag(target,"rodUsed",String.valueOf(usedCount));
-                    }catch (ClassCastException e){
+                    }catch (NumberFormatException e){
                         player.sendMessage(prefix + "§c请按照提示要求输入喵!");
                         return true;
                     }
@@ -89,7 +89,7 @@ public class rodMerge implements CommandExecutor, Listener ,TabCompleter{
 
                 case "getrodused":
                     if (!sender.isOp()) {
-                        sender.sendMessage(prefix + "§c你没有权限使用 setrodused 喵~");
+                        sender.sendMessage(prefix + "§c你没有权限使用 getrodused 喵~");
                         return true;
                     }
                     if (args.length != 2){

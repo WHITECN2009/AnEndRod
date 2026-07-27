@@ -11,7 +11,8 @@ public class SlimesListener implements Listener {
     public void onDeath(EntityDeathEvent event){
         if (event.getEntityType() != EntityType.SLIME) return;
         LivingEntity entity = event.getEntity();
-        if (entity.getCustomName().contains("附着物")){
+        String customName = entity.getCustomName();
+        if (customName != null && customName.contains("附着物")){
             event.setDroppedExp(0);
             event.getDrops().clear();
         }

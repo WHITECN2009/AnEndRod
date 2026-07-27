@@ -44,6 +44,11 @@ public class SlimeRod extends AbstractRod {
     }
 
     @Override
+    protected double getDeathStatusDuration() {
+        return 10 * 20;
+    }
+
+    @Override
     public ItemStack createItemStack() {
         ItemStack rod = createBaseItemStack();
         ItemMeta meta = rod.getItemMeta();

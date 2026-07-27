@@ -5,6 +5,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.WHITECN.Vars;
 import org.WHITECN.anendrod;
 import org.WHITECN.utils.AdvancementHandler;
+import org.WHITECN.utils.DeathStatus;
 import org.WHITECN.utils.SQLiteUtils;
 import org.WHITECN.utils.tagUtils;
 import org.WHITECN.utils.useCounter;
@@ -155,6 +156,7 @@ public abstract class AbstractRod implements Listener {
 
         //正片开始(bushi
         target.playSound(player, Insert_sounds.get(random.nextInt(Insert_sounds.size())), 1.0f, 1.0f);
+        DeathStatus.add(player.getUniqueId(), target.getUniqueId(), getDeathStatusDuration(), item);
         onUse(player, target);
         target.setNoDamageTicks(5);
         player.setCooldown(Material.END_ROD, this.cooldown);
@@ -174,7 +176,10 @@ public abstract class AbstractRod implements Listener {
             SQLiteUtils.setCTCount(playerName, SQLiteUtils.getCTCount(playerName) + 1);
             SQLiteUtils.setChaCount(targetName, SQLiteUtils.getChaCount(targetName) + 1);
         });
-        AdvancementHandler.advancementTest(target); //成就
+    }
+
+    protected double getDeathStatusDuration() {
+        return 10;
     }
     
     //如果需要更新其他的数据要重写这个
