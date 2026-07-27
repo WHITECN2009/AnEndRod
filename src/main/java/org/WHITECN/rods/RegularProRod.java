@@ -36,7 +36,7 @@ public class RegularProRod extends AbstractRod{
     }
 
     @Override
-    public void onUse(Player player, Player target) {
+    public void onUse(Player user, Player player) {
         Plugin plug = JavaPlugin.getPlugin(anendrod.class);
         player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 50 * 20, 3));
         player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 80 * 20, 3));
@@ -144,6 +144,11 @@ public class RegularProRod extends AbstractRod{
                 t++;
             }
         }.runTaskTimer(plug, 0L, 1L);
+    }
+
+    @Override
+    protected double getDeathStatusDuration() {
+        return (80 + 10) * 20;
     }
 
     @Override
