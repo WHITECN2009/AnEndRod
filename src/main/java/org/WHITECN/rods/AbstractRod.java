@@ -60,9 +60,9 @@ public abstract class AbstractRod implements Listener {
 
         addRecipeIngredients();
     }
-    
+
     public abstract void onUse(Player player, Player target);
-    
+
     public abstract ItemStack createItemStack();
 
     public abstract void addRecipeIngredients();
@@ -104,15 +104,9 @@ public abstract class AbstractRod implements Listener {
                 event.setCancelled(true);
                 
                 if (!player.isSneaking() && player.getCooldown(Material.END_ROD) == 0) {
-                    if (player.getEquipment().getLeggings() != null) {
-                        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§c怎么穿着裤子喵!"));
-                        return;
+                    if (handleRodAmount(player)){
+                        handleRodUse(player, player, mainHand, meta);
                     }
-                    if (mainHand.getAmount() > 1){
-                        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§d一次性这么多的话...会坏掉吧喵.."));
-                        return;
-                    }
-                    handleRodUse(player, player, mainHand, meta);
                 }
             }
         }
@@ -134,15 +128,9 @@ public abstract class AbstractRod implements Listener {
                 event.setCancelled(true);
                 
                 if (player.isSneaking() && player.getCooldown(Material.END_ROD) == 0) {
-                    if (target.getEquipment().getLeggings() != null) {
-                        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§c怎么穿着裤子喵!"));
-                        return;
+                    if (handleLeggingStatus(player, target) && handleRodAmount(player)) {
+                        handleRodUse(player, target, mainHand, meta);
                     }
-                    if (mainHand.getAmount() > 1){
-                        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§d一次性这么多的话...会坏掉吧喵.."));
-                        return;
-                    }
-                    handleRodUse(player, target, mainHand, meta);
                 }
             }
         }
@@ -206,15 +194,38 @@ public abstract class AbstractRod implements Listener {
     public ItemStack createBaseItemStack() {
         ItemStack rod = new ItemStack(Material.END_ROD);
         ItemMeta meta = rod.getItemMeta();
-        
-        meta.setDisplayName(this.displayName);
-        
-        List<String> lore = new ArrayList<>(this.baseLore);
-        meta.setLore(lore);
 
-        applyPersistentData(meta);
-        
+        if (meta != null) {
+            meta.setDisplayName(this.displayName);
+        }
+
+        List<String> lore = new ArrayList<>(this.baseLore);
+        if (meta != null) {
+            meta.setLore(lore);
+        }
+
+        if (meta != null) {
+            applyPersistentData(meta);
+        }
+
         rod.setItemMeta(meta);
         return rod;
+    }
+
+    private boolean handleLeggingStatus(Player player, Player target){
+        if (target.getEquipment() == null) return false;
+        if (Objects.requireNonNull(target.getEquipment().getLeggings()).getType() != Material.AIR) {
+            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§c怎么穿着裤子喵!"));
+            return false;
+        }
+        return true;
+    }
+    private boolean handleRodAmount(Player player){
+        ItemStack mainhand = player.getInventory().getItemInMainHand();
+        if (mainhand.getAmount() > 1){
+            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§d一次塞这么多的话...会坏掉吧喵.."));
+            return false;
+        }
+        return true;
     }
 }

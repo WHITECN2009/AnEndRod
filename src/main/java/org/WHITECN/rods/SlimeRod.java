@@ -3,7 +3,6 @@ package org.WHITECN.rods;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.WHITECN.Vars;
-import org.WHITECN.utils.DeathStatus;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Particle;

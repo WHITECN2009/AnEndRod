@@ -1,14 +1,9 @@
 package org.WHITECN.rods;
 
 import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.WHITECN.Vars;
 import org.WHITECN.anendrod;
-import org.WHITECN.utils.AdvancementHandler;
 import org.WHITECN.utils.ConfigManager;
-import org.WHITECN.utils.SQLiteUtils;
-import org.WHITECN.utils.tagUtils;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.World;
@@ -35,8 +30,7 @@ public class RegularProRod extends AbstractRod{
         );
     }
 
-    @Override
-    public void onUse(Player user, Player player) {
+    public void onUse(Player player, Player target) {
         Plugin plug = JavaPlugin.getPlugin(anendrod.class);
         player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 50 * 20, 3));
         player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 80 * 20, 3));

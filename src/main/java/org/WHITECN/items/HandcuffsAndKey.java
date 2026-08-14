@@ -46,15 +46,22 @@ public class HandcuffsAndKey implements Listener{
         /* 名字过滤：主手必须是手铐，副手必须是钥匙 */
         ItemMeta mainMeta = main.getItemMeta();
         ItemMeta offMeta = off.getItemMeta();
-        if (!(handCuffsName.equals(mainMeta.getDisplayName())) || !(keyItemName.equals(offMeta.getDisplayName()))) return;
+        if (offMeta != null && mainMeta != null && (!(handCuffsName.equals(mainMeta.getDisplayName())) || !(keyItemName.equals(offMeta.getDisplayName()))))
+            return;
 
-        List<Integer> cuffsCode = KeyGen.getKey(mainMeta);
-        List<Integer> keyCode   = KeyGen.getKey(offMeta);
+        List<Integer> cuffsCode = null;
+        if (mainMeta != null) {
+            cuffsCode = KeyGen.getKey(mainMeta);
+        }
+        List<Integer> keyCode   = null;
+        if (offMeta != null) {
+            keyCode = KeyGen.getKey(offMeta);
+        }
 
         if (main.getAmount() > 1 || off.getAmount() > 1) event.getPlayer().sendMessage(ChatColor.RED + "只能进行一次绑定！");
 
         /* 规则 1：俩都没数据 → 生成新钥匙并同时写入 */
-        if (cuffsCode.isEmpty() && keyCode.isEmpty()) {
+        if (keyCode != null && cuffsCode != null && cuffsCode.isEmpty() && keyCode.isEmpty()) {
             List<Integer> newCode = KeyGen.generateKey();
             KeyGen.setKey(mainMeta, newCode);
             KeyGen.setKey(offMeta, newCode);
@@ -68,7 +75,9 @@ public class HandcuffsAndKey implements Listener{
             offMeta.setLore(offLore);
 
             List<String> mainLore = mainMeta.getLore();
-            mainLore.add(ChatColor.LIGHT_PURPLE + "需要钥匙: "+ ChatColor.GRAY + keyPattern);
+            if (mainLore != null) {
+                mainLore.add(ChatColor.LIGHT_PURPLE + "需要钥匙: " + ChatColor.GRAY + keyPattern);
+            }
             mainMeta.setLore(mainLore);
 
             mainMeta.getPersistentDataContainer().set(
@@ -85,7 +94,7 @@ public class HandcuffsAndKey implements Listener{
         }
 
         /* 规则 2：钥匙有数据，手铐没有 → 把手铐写成钥匙的序列 */
-        if (!keyCode.isEmpty() && cuffsCode.isEmpty()) {
+        if (keyCode != null && cuffsCode != null && !keyCode.isEmpty() && cuffsCode.isEmpty()) {
             // 把 keyCode 写进手铐
             mainMeta.getPersistentDataContainer().set(
                     new NamespacedKey(anendrod.getInstance(), "code"),
@@ -97,7 +106,7 @@ public class HandcuffsAndKey implements Listener{
             player.sendMessage(ChatColor.GREEN + "手铐已绑定到当前钥匙！");
             return;
         }
-        
+
         player.sendMessage(ChatColor.RED + "这个手铐已经绑定过钥匙了！");
     }
     @EventHandler
@@ -119,8 +128,8 @@ public class HandcuffsAndKey implements Listener{
         }
 
         // 检查目标是否已经佩戴了手铐
-        ItemStack currentChestplate = target.getEquipment().getChestplate();
-        if (currentChestplate != null && currentChestplate.hasItemMeta() && handCuffsName.equals(currentChestplate.getItemMeta().getDisplayName())) {
+        ItemStack currentChestplate = Objects.requireNonNull(target.getEquipment()).getChestplate();
+        if (currentChestplate != null && currentChestplate.hasItemMeta() && handCuffsName.equals(Objects.requireNonNull(currentChestplate.getItemMeta()).getDisplayName())) {
             user.sendMessage(prefix + "§c该玩家已经戴着手铐了！");
             return;
         }
@@ -151,26 +160,32 @@ public class HandcuffsAndKey implements Listener{
         ItemStack key = unlocker.getInventory().getItemInMainHand();
         if (!key.hasItemMeta()) return;
         ItemMeta keyMeta = key.getItemMeta();
-        if (!keyItemName.equals(keyMeta.getDisplayName())) return;
+        if (keyMeta != null && !keyItemName.equals(keyMeta.getDisplayName())) return;
 
         ItemStack cuffs = target.getInventory().getChestplate();
         if (cuffs == null || !cuffs.hasItemMeta()) return;
         ItemMeta cuffsMeta = cuffs.getItemMeta();
-        if (!handCuffsName.equals(cuffsMeta.getDisplayName())) return;
+        if (cuffsMeta != null && !handCuffsName.equals(cuffsMeta.getDisplayName())) return;
 
-        List<Integer> cuffsCode = KeyGen.getKey(cuffsMeta);
-        
-        if (cuffsCode.isEmpty()) {
+        List<Integer> cuffsCode = null;
+        if (cuffsMeta != null) {
+            cuffsCode = KeyGen.getKey(cuffsMeta);
+        }
+
+        if (cuffsCode != null && cuffsCode.isEmpty()) {
             target.getInventory().setChestplate(null);
             target.getWorld().dropItemNaturally(target.getLocation(), cuffs);
             return;
         }
-        
-        List<Integer> keyCode = KeyGen.getKey(keyMeta);
-        if (keyCode.isEmpty() || !keyCode.equals(cuffsCode)) {
+
+        List<Integer> keyCode = null;
+        if (keyMeta != null) {
+            keyCode = KeyGen.getKey(keyMeta);
+        }
+        if (keyCode != null && (keyCode.isEmpty() || !keyCode.equals(cuffsCode))) {
             return;
         }
-        
+
         target.getInventory().setChestplate(null);
         target.getWorld().dropItemNaturally(target.getLocation(), cuffs);
     }
@@ -179,7 +194,7 @@ public class HandcuffsAndKey implements Listener{
     public void checkSelfCuff(PlayerInteractEvent event) {
         if (event.getItem() == null) return;
         if (event.getPlayer().getInventory().getItemInMainHand().getItemMeta() != null || event.getPlayer().getInventory().getItemInOffHand().getItemMeta() != null) {
-            if (event.getItem().getItemMeta().getDisplayName().equals("§d手铐♥")) {
+            if (Objects.requireNonNull(event.getItem().getItemMeta()).getDisplayName().equals("§d手铐♥")) {
                 event.setCancelled(true);
                 event.getPlayer().sendMessage(prefix + "§c想要自缚嘛？不可以哦");
             }
@@ -191,7 +206,7 @@ public class HandcuffsAndKey implements Listener{
         // 阻止直接点击盔甲槽放入手铐
         if (event.getSlotType() == InventoryType.SlotType.ARMOR && event.getRawSlot() == 6) { // 6 是胸甲槽位
             ItemStack cursor = event.getCursor();
-            if (cursor != null && cursor.hasItemMeta() && handCuffsName.equals(cursor.getItemMeta().getDisplayName())) {
+            if (cursor != null && cursor.hasItemMeta() && handCuffsName.equals(Objects.requireNonNull(cursor.getItemMeta()).getDisplayName())) {
                 event.setCancelled(true);
                 event.getWhoClicked().sendMessage(prefix + "§c想要自缚嘛？不可以哦");
                 return;
@@ -200,7 +215,7 @@ public class HandcuffsAndKey implements Listener{
         // 处理 Shift 点击
         if (event.isShiftClick() && event.getCurrentItem() != null) {
             ItemStack clicked = event.getCurrentItem();
-            if (clicked.hasItemMeta() && handCuffsName.equals(clicked.getItemMeta().getDisplayName())) {
+            if (clicked.hasItemMeta() && handCuffsName.equals(Objects.requireNonNull(clicked.getItemMeta()).getDisplayName())) {
                 // 如果是玩家自己的背包界面
                 if (event.getInventory().getType() == InventoryType.CRAFTING || event.getInventory().getType() == InventoryType.PLAYER) {
                     event.setCancelled(true);
@@ -213,7 +228,7 @@ public class HandcuffsAndKey implements Listener{
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onInteract(PlayerInteractEvent event) {
         if (!(event.getAction() == Action.LEFT_CLICK_AIR) || !(event.getAction() == Action.RIGHT_CLICK_AIR)) return;
-        if (event.getPlayer().getEquipment().getChestplate() != null) {
+        if (Objects.requireNonNull(event.getPlayer().getEquipment()).getChestplate() != null && event.getPlayer().getEquipment().getChestplate().getItemMeta() != null) {
             if (event.getPlayer().getEquipment().getChestplate().getItemMeta().getDisplayName().equals("§d手铐♥")) {
                 if (event.getPlayer().getLocation().distance(Objects.requireNonNull(event.getClickedBlock()).getLocation().add(0.5, 0.5, 0.5)) > RANGE) {
                     event.setCancelled(true);
@@ -224,7 +239,7 @@ public class HandcuffsAndKey implements Listener{
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onInteractEntity(PlayerInteractEntityEvent event) {
-        if (event.getPlayer().getEquipment().getChestplate() != null) {
+        if (Objects.requireNonNull(event.getPlayer().getEquipment()).getChestplate() != null && event.getPlayer().getEquipment().getChestplate().getItemMeta() != null) {
             if (event.getPlayer().getEquipment().getChestplate().getItemMeta().getDisplayName().equals("§d手铐♥")) {
                 if (event.getPlayer().getLocation().distance(event.getRightClicked().getLocation()) > RANGE) {
                     event.setCancelled(true);
